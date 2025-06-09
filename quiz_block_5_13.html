@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 5-13</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 5-13</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your company\u2019s legal department has issued a litigation hold that requires you to preserve all data related to a specific project. You need to ensure that all data for this project, including emails, documents, and chats, are preserved indefinitely and cannot be deleted by users. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a hold in Google Vault that includes all users and data sources associated with the project."
+      },
+      {
+        "letra": "B",
+        "texto": "Assign an Archived User license to all users involved in the project."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up a retention rule in Google Vault that retains all data from Gmail and Drive indefinitely."
+      },
+      {
+        "letra": "D",
+        "texto": "Export all project related data from Google Workspace and store the data in a separate, secure location.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization allows employees to use their personal devices for work purposes. You want to ensure these devices follow the company\u2019s security policies. You need to choose a mobile management solution that provides minimal passcode enforcement and allows for an admin to remotely wipe a user\u2019s account from the device. You also want to avoid having to install agents on employees\u2019 personal devices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement Google\u2019s advanced management on mobile devices."
+      },
+      {
+        "letra": "B",
+        "texto": "Implement Google\u2019s basic management on mobile devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Enforce a strong password policy, and enforce the password policy at the next sign-in."
+      },
+      {
+        "letra": "D",
+        "texto": "Deploy a third-party mobile device management (MDM) solution.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "An employee is leaving your company and has numerous files stored in My Drive. Their manager wants to retain access to these files. You need to offboard the departing employee\u2019s Google Workspace account while ensuring that the manager can still access the files while following Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use Google Vault to establish a retention policy for the organizational unit (OU) of the departing employee. Assign the Google Archived User license."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the departing employee to share their My Drive folder with the manager before leaving. Delete the Google Workspace account on the departing employee\u2019s last day."
+      },
+      {
+        "letra": "C",
+        "texto": "Download the departing employee\u2019s Drive data by using Google Takeout. Upload the data to the manager\u2019s Drive before deleting the departing employee\u2019s Google Workspace account."
+      },
+      {
+        "letra": "D",
+        "texto": "Transfer ownership of the departing employee\u2019s files to the manager during the user deletion process.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You need to create an automated application or process that includes connectors to external data, leverages Google Sheets data, and is easily shared as a mobile application. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create an application by using App Engine. Connect the application to your Workspace environment"
+      },
+      {
+        "letra": "B",
+        "texto": "Copy the external data to BigQuery. Use a Connected Sheet to interact with the data."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an AppSheet application to connect the different data sources. Set up the mobile application."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an automation process by using Apps Script. Run the process through Google Sheets.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization recently deployed Google Workspace. Over 3,000 external contacts were shared in public folders in Microsoft Exchange before the implementation. You need to ensure that these external contacts appear to domain users in Gmail. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Export the external contacts to a CSV file, upload the file to Google Drive, and instruct users to import to their My Contacts."
+      },
+      {
+        "letra": "B",
+        "texto": "Use Google Cloud Directory Sync to sync the external contacts from the public folders in Microsoft Exchange to the Directory."
+      },
+      {
+        "letra": "C",
+        "texto": "Use the Domain Shared Contacts API to add the external contacts to the Directory."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a user account, add the external contacts, and delegate them to all users in the domain.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

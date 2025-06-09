@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 5-8</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 5-8</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "The names and capacities of several conference rooms have been updated. You need to use the most efficient way to update these details.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Export the resource list to a CSV file, make the changes, and re-import the updated file."
+      },
+      {
+        "letra": "B",
+        "texto": "Edit each resource in the Google Admin console."
+      },
+      {
+        "letra": "C",
+        "texto": "Add the modified rooms as new resources. Tell employees not to use old rooms."
+      },
+      {
+        "letra": "D",
+        "texto": "Delete the existing resources and recreate the resources with the updated information.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are configuring Chrome browser security policies for your organization. These policies must restrict certain Chrome apps and extensions.You need to ensure that these policies are applied on the devices regardless of which user logs into the device. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure the allowed list of apps in the Devices page in the apps and extensions settings."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure the Chrome user setting to require users to sign in to use Chrome apps and extensions."
+      },
+      {
+        "letra": "C",
+        "texto": "Configure the Policy Precedence to override the domain-wide policy applied for apps and extensions."
+      },
+      {
+        "letra": "D",
+        "texto": "Require 2SV for user logins.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company\u2019s help desk is receiving technical support tickets from employees who report that messages from known external contacts are being sent to the spam label in Gmail. You need to correct the issue and ensure delivery of legitimate emails without introducing additional risk as soon as possible. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Ask employees to select the messages in Gmail that are being delivered to spam and mark them as Not spam."
+      },
+      {
+        "letra": "B",
+        "texto": "Contact the external senders, and tell them to authenticate their sent mail by using domain-based message authentication, reporting, and conformance (DMARC)."
+      },
+      {
+        "letra": "C",
+        "texto": "Turn off more aggressive spam filtering in spam policies that are applied to the users\u2019 organizational unit and add the senders\u2019 mail system IP addresses to the email allowlist."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an address list of approved senders so messages from these users bypass Gmail\u2019s spam filters and recipients can decide whether they are spam or not.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "A user in your organization received a spam email that they reported for further investigation. You need to find out more details and the scope of this incident as quickly as possible. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Conduct a Vault search to find this email and identify if additional users were affected."
+      },
+      {
+        "letra": "B",
+        "texto": "Conduct a search to find all emails sent by the sender by using the Gmail API."
+      },
+      {
+        "letra": "C",
+        "texto": "Conduct an Email reports search to find this email and all of the email\u2019s recipients."
+      },
+      {
+        "letra": "D",
+        "texto": "Conduct a search in the security investigation tool to find this email, and identify whether additional users were affected.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You work at a large organization that prohibits employees from using Google Sites. However, a task force comprised of three people from five different departments has recently been formed to work on a project assigned by the Office of the CIO. You need to allow the users in this task force to temporarily use Google Sites. You want to use the least disruptive and most efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Turn Google Sites access on for each of the 15 users in the task force."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a configuration group for the task force\u2019s 15 users. Grant Google Sites access to the group."
+      },
+      {
+        "letra": "C",
+        "texto": "Place the 15 task force users into a new organizational unit (OU). Turn on Google Sites access for the OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an access group for the task force\u2019s 15 users. Grant Google Sites access to the group.Reveal SolutionHide SolutionDiscussion4"
+      }
+    ],
+    "respuesta": "B"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 10-5</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 10-5</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your organization collects credit card information in customer files. You need to implement a policy for your organization\u2019s Google Drive data that prevents the accidental sharing of files that contain credit card numbers with external users. You also need to record any sharing incidents for reporting. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a data loss prevention (DLP) rule that uses the predefined credit card number detector, sets the action to \u201cblock external sharing\u201d, and enables the \u201cLog event\u201d option."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable Gmail content compliance, and create a rule to block email attachments containing credit card numbers from being sent to external recipients."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement a third-party data loss prevention solution to integrate with Drive and provide advanced content detection capabilities."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure a data retention policy to automatically delete files containing credit card numbers after a specified period.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are investigating a potential data breach. You need to see which devices are accessing corporate data and the applications used. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Analyze the audit log in the Admin console for device and application activity."
+      },
+      {
+        "letra": "B",
+        "texto": "Analyze the security investigation tool to access device log data."
+      },
+      {
+        "letra": "C",
+        "texto": "Analyze the Google Workspace reporting section of the Admin console."
+      },
+      {
+        "letra": "D",
+        "texto": "Analyze the User Accounts section in the Google Admin console.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization is implementing a new customer support process that uses Gmail. You need to create a cost-effective solution that allows external customers to send support request emails to the customer support team. The requests must be evenly distributed among the customer support agents. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a Google Group, enable collaborative inbox settings, set posting permissions to \u201cAnyone on the web\u201d, and add the customer support agents as group members."
+      },
+      {
+        "letra": "B",
+        "texto": "Use delegated access for a specific email address that represents the customer support group, and add the customer support team as delegates for that email address."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Group, add the support agents to the group, and set the posting permissions to \u201cPublic.\u201d"
+      },
+      {
+        "letra": "D",
+        "texto": "Set up an inbox for the customer support team. Provide the login credentials to the customer support team.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization has enabled Google Groups for Business to let employees create and manage their own email distribution lists and web forums. You need to ensure that users cannot join external Google Groups with their Google Workspace accounts without interrupting internal group usage. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set the setting for Google Groups for Business called Accessing groups from outside this organization to Private."
+      },
+      {
+        "letra": "B",
+        "texto": "In Additional Google Services, turn Google Groups OFF at the root organizational unit."
+      },
+      {
+        "letra": "C",
+        "texto": "Use the Directory API to change the settings of user-created groups to disable features that allow external users to access, view, or post on groups."
+      },
+      {
+        "letra": "D",
+        "texto": "Set the setting for Google Groups for Business called Default for permission to view conversations to All organization users.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You manage Chrome Enterprise browsers for your large organization. You want to ensure that specific extensions are automatically installed on all managed Chrome Enterprise browsers. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Allowlist the specific Chrome browser extensions."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure a script to deploy the extensions upon user login."
+      },
+      {
+        "letra": "C",
+        "texto": "Publish the extensions in the Chrome Web Store."
+      },
+      {
+        "letra": "D",
+        "texto": "Force-install the extensions through Chrome browser policies.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You need to grant a specific set of users in your company access to YouTube, and you want to restrict their access to Merchant Center. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Enable YouTube for all users in the company. Individually restrict access to Merchant Center for specific Groups or organizational units (OUs)."
+      },
+      {
+        "letra": "B",
+        "texto": "Create YouTube and Merchant Center as custom web apps. Apply access policies at the Group or organizational unit (OU) level."
+      },
+      {
+        "letra": "C",
+        "texto": "Contact Google Support and request that they enable YouTube access for the specific set of users and restrict their access to Merchant Center."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable access to YouTube at the Group or organizational unit (OU) level for the subset of users. Disable access to Merchant Center.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization is about to conduct its biannual risk assessment. You need to help identify security risks by quickly reviewing all security settings for Gmail, Drive, and Calendar. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "In the reporting section of the Admin console, review the Gmail, Drive, and Calendar reports."
+      },
+      {
+        "letra": "B",
+        "texto": "In the alert center, review all of the alerts."
+      },
+      {
+        "letra": "C",
+        "texto": "In each individual organizational unit (OU), review the security settings."
+      },
+      {
+        "letra": "D",
+        "texto": "In the Google Admin console, review the security health page.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You need to ensure that data owned by former employees remains available in Google Vault. You want to use the most cost-effective solution.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Migrate the former employees\u2019 Gmail to their manager(s) by using the data migration service during the deletion process. Transfer the former employees\u2019 Google Drive files to a new owner."
+      },
+      {
+        "letra": "B",
+        "texto": "Change the Google account passwords of the former employees."
+      },
+      {
+        "letra": "C",
+        "texto": "Suspend the former employees\u2019 Google accounts. Create an organizational unit (OU). Move the former employees into that OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Assign an Archived User license to the former employees\u2019 Google accounts.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "A user is experiencing intermittent issues accessing their Gmail inbox. Sometimes their Gmail loads slowly, and other times the user encounters error messages that haven\u2019t been documented. You need to effectively troubleshoot this recurring problem. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Check the Google Workspace Status Dashboard for any reported service disruptions."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the user to generate a HAR file the next time they experience slowness or an error."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct the user to try to access Gmail from another device or network to see if the issue persists."
+      },
+      {
+        "letra": "D",
+        "texto": "Instruct the user to clear their browser cache and cookies.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "You are managing the buildings and resources for your organization. You need to create several conference rooms with a capacity of 10 people each, equipped with a whiteboard and projector, and wheelchair accessible. You want to ensure the process is efficient. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Automate room creation by using a third-party app from the Google Workspace Marketplace."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a CSV file and add all resources. Write a script using the Workspace API to reference the CSV file and create all the resources."
+      },
+      {
+        "letra": "C",
+        "texto": "Create each conference room individually in the Google Admin console. Add the features for each room."
+      },
+      {
+        "letra": "D",
+        "texto": "Use the Google Admin console to bulk upload the rooms. Create a resource with the specified features and apply the features to that resource.Reveal SolutionHide SolutionDiscussion3"
+      }
+    ],
+    "respuesta": "D"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

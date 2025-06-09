@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 5-11</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 5-11</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your organization allows employees to use their personal mobile devices to check their work emails. You need to remove the employee\u2019s work email data from their phone when they leave the organization. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up basic mobile management on the devices."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management on the devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up data protection rules to prevent data sharing externally."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up 2SV authentication on the devices.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "External sharing at your company is only permitted for the sales and marketing department. Engineering is not allowed to share externally. You need to configure the sharing settings to comply with this policy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use a data loss prevention (DLP) solution to control external sharing based on user groups."
+      },
+      {
+        "letra": "B",
+        "texto": "Create separate shared drives for each department with different external sharing settings."
+      },
+      {
+        "letra": "C",
+        "texto": "Create organizational units (OUs) for each department. Configure different external sharing settings for each OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure Drive trust rules to restrict the engineering department from sharing externally.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company has purchased Gemini licenses for a subset of employees. You need to ensure that only users in the marketing and sales departments have access to Gemini features by using the most efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a script to assign a Gemini license to new users if they are in marketing or sales. Run the script daily."
+      },
+      {
+        "letra": "B",
+        "texto": "Create an organizational unit (OU) for marketing and sales. Assign the Gemini licenses to that OU, and enable Gemini for that OU only."
+      },
+      {
+        "letra": "C",
+        "texto": "Assign Gemini licenses to each user in the marketing and sales departments."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable Gemini for the entire organization. Instruct users in other departments not to use Gemini.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company wants to enable single sign-on (SSO) for its employees to access a newly acquired cloud-based marketing platform. The marketing platform vendor has confirmed SAML 2.0 compatibility and provided the necessary metadata. You need to streamline user access and centralize authentication through Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Request an API key from the marketing platform vendor for SAML integration."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable two-factor authentication for all users to enhance security before implementing SSO."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct employees to log in to the marketing platform using the Sign In with Google functionality."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a new SAML application in the Google Admin console.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization handles a significant amount of sensitive customer data and must follow strict industry regulations. To meet an upcoming compliance deadline, you need to quickly implement a solution that automatically classifies files stored in Google Drive based on the content of files.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create data loss prevention (DLP) rules for Drive. Configure the rules to apply Drive labels based on content."
+      },
+      {
+        "letra": "B",
+        "texto": "Apply Drive labels based on content. Use Google Vault to create retention rules based on Drive labels, ensuring that data is kept for the required duration."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement a third-party data governance tool that integrates with Drive and provides advanced classification capabilities."
+      },
+      {
+        "letra": "D",
+        "texto": "Add users into organizational units (OUs). Configure default file classification in Drive for the desired OUs.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

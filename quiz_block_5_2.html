@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 5-2</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 5-2</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your company distributes an internal newsletter that contains sensitive information to all employees by email. You\u2019ve noticed unauthorized forwarding of this newsletter to external addresses, potentially leading to data leaks. To prevent this, you need to implement a solution that automatically detects and blocks such forwarding while allowing legitimate internal sharing. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add a banner to the newsletter that warns users that external sharing is prohibited."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a Gmail content compliance rule that targets the internal newsletter, identifying instances of external forwarding. Configure the rule to reject the message when such forwarding is detected"
+      },
+      {
+        "letra": "C",
+        "texto": "Develop an Apps Script project by using the Gmail API to scan sent emails for the newsletter content and external recipients. Automatically revoke access for violating users."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a content compliance rule to modify the newsletter subject line, adding a warning against external forwarding.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your organization has hired temporary employees to work on a sensitive internal project. You need to ensure that the sensitive project data in Google Drive is limited to only internal domain sharing. You do not want to be overly restrictive. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure the Drive sharing options for the domain to internal only."
+      },
+      {
+        "letra": "B",
+        "texto": "Restrict the Drive sharing options for the domain to allowlisted domains."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Drive DLP rule, and use the sensitive internal Project name as the detector."
+      },
+      {
+        "letra": "D",
+        "texto": "Turn off the Drive sharing setting from the Team dashboard.Reveal SolutionHide SolutionDiscussion7"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Several employees at your company received messages with links to malicious websites. The messages appear to have been sent by your company\u2019s human resources department. You need to identify which users received the emails and prevent a recurrence of similar incidents in the future. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Search the sender\u2019s email address by using Email Log Search. Identify the users that received the messages. Instruct them to mark them as spam in Gmail, delete the messages, and empty the trash."
+      },
+      {
+        "letra": "B",
+        "texto": "Search for the sender\u2019s email address by using the security investigation tool. Mark the messages as phishing. Add the sender\u2019s email address to the Blocked senders list in the Spam, Phishing and Malware setting in Gmail to automatically reject future messages."
+      },
+      {
+        "letra": "C",
+        "texto": "Collect a list of users who received the messages. Search the recipients\u2019 email addresses in Google Vault. Export and download the malicious emails in PST file format. Add the sender\u2019s email address to a quarantine list setting in Gmail to quarantine any future emails from the sender."
+      },
+      {
+        "letra": "D",
+        "texto": "Search for the sender\u2019s email address by using the security investigation tool. Delete the messages. Turn on the safety options for spoofing and authentication protection in Gmail settings.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization\u2019s users are reporting that a large volume of legitimate emails are being misidentified as spam in Gmail. You want to troubleshoot this problem while following Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Adjust the organization\u2019s mail content compliance settings in the Admin console."
+      },
+      {
+        "letra": "B",
+        "texto": "Advise users to individually allowlist senders."
+      },
+      {
+        "letra": "C",
+        "texto": "Disable spam filtering for all users."
+      },
+      {
+        "letra": "D",
+        "texto": "Contact Google Workspace support and report a suspected system-wide spam filter malfunction.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization\u2019s security team has published a list of vetted third-party apps and extensions that can be used by employees. All other apps are prohibited unless a business case is presented and approved. The Chrome Web Store policy applied at the top-level organization allows all apps and extensions with an admin blocklist. You need to disable any unapproved apps that have already been installed and prevent employees from installing unapproved apps. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Change the Chrome Web Store allow/block mode setting to allow all apps, admin manages blocklist, In the App access control card, block any existing web app that is not on the security team\u2019s vetted list."
+      },
+      {
+        "letra": "B",
+        "texto": "Change the Chrome Web Store allow/block mode setting to block all apps, admin manages allowlist. Add the apps on the security team\u2019s vetted list to the allowlist."
+      },
+      {
+        "letra": "C",
+        "texto": "Disable Extensions and Chrome packaged apps as Allowed types of apps and extensions for the top-level organizational unit. Selectively enable the appropriate extension types for each suborganization"
+      },
+      {
+        "letra": "D",
+        "texto": "Disable the Chrome Web Store service for the top-level organizational unit. Enable the Chrome Web Store service for organizations that require Chrome apps and extensions.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

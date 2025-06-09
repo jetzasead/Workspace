@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 10-2</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 10-2</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your company handles sensitive client data and needs to maintain a high level of security to comply with strict industry regulations. You need to allow your company\u2019s security team to investigate potential security breaches by using the security investigation tool in the Google Admin console.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create an activity rule that triggers email notifications to the security team whenever a high-risk security event occurs."
+      },
+      {
+        "letra": "B",
+        "texto": "Assign the User Management Admin role to the security team."
+      },
+      {
+        "letra": "C",
+        "texto": "Assign the super admin role to the security team"
+      },
+      {
+        "letra": "D",
+        "texto": "Create an administrator role with Security Center access. Assign the role to the security team.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization requires enhanced privacy and security when sending messages to banks and other financial institutions. Your organization uses Gmail, but the banks use various other email providers. You need to maximize privacy and limit access to messages sent and received between your organization and the banks. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up Transport Layer Security (TLS) compliance for inbound and outbound messages with a list of the banks\u2019 email domains. Validate the TLS connections."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure Sender Policy Framework (SPF) and DomainKeys Identified Mail (DKIM) authentication for your email domains."
+      },
+      {
+        "letra": "C",
+        "texto": "Enable Protect against unauthenticated emails in Gmail Safety."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable confidential mode for Gmail. Instruct employees to use confidential mode when sending messages to the banks.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "An end user has thousands of files stored in Google Drive. Their files are well organized with Drive labels. You need to advise the end user on how to quickly identify all files that are contracts. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Advise the user to use the Google Drive API to search for files with the keyword \u201ccontracts\u201d"
+      },
+      {
+        "letra": "B",
+        "texto": "Advise the user to search in Drive for files with the keyword \u201ccontracts\u201d, and use the \u201cmodified by me\u201d filter."
+      },
+      {
+        "letra": "C",
+        "texto": "Advise the user to search for files that are labeled as \u201ccontracts\u201d."
+      },
+      {
+        "letra": "D",
+        "texto": "Advise the user to use the Investigation tool to search for files with the keyword \u201ccontracts\u201d and updated by you.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You\u2019ve received multiple reports about a suspicious email from someone who is pretending to be from your organization\u2019s human resources department. The email is prompting employees to click a link for a password update. You want to remediate this sender\u2019s emails. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use the security investigation tool to search for users who received the suspicious email, and select Mark message as phishing."
+      },
+      {
+        "letra": "B",
+        "texto": "Use the security investigation tool to action the suspicious email and select Mark message as spam."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule to alert administrators to similar emails from that sender."
+      },
+      {
+        "letra": "D",
+        "texto": "Notify all employees and request that they report this email as spam.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company\u2019s security team has requested two requirements to secure employees\u2019 mobile devices-enforcement of a passcode and remote account wipe functionality. The security team does not want an agent to be installed on the mobile devices or to purchase additional licenses. Employees have a mix of iOS and Android devices. You need to ensure that these requirements are met. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement a third-party enterprise mobility management (EMM) provider."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management for iOS devices and basic mobile management for Android devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up basic management for both iOS and Android devices."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up advanced management for both iOS and Android devices.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization needs an approval application for purchases where a user can enter information on the purchase required and then submit it for management approval. You need to suggest a solution to create the application that must be available on both the web and mobile devices. Your organization does not have software developers or the budget to hire a third party. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Suggest that the organization develop an application internally with a database, a backend service for data retrieval, and a frontend service for the application\u2019s user interface."
+      },
+      {
+        "letra": "B",
+        "texto": "Suggest that the organization continue to approve requests manually until budget is available to use a third-party application provider."
+      },
+      {
+        "letra": "C",
+        "texto": "Suggest the organization use AppSheet to create the application."
+      },
+      {
+        "letra": "D",
+        "texto": "Suggest that the organization use AppScript to create forms linked to a Google Sheet to store the purchase data.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization is concerned about unauthorized access attempts. You want to implement a security measure that makes users change their password if there are twenty or more failed login attempts within one hour. You want to use the most effective and efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up a Chrome action rule to restrict users from defined ChromeOS actions after twenty failed password attempts."
+      },
+      {
+        "letra": "B",
+        "texto": "Create an activity rule for user log events, define a time period and threshold, and select an Action for the rule to force a password change."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule for live-state data sources that meets the required time period and threshold to identify users who need to change their password."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable email alerts to notify users that they need to change their password.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "An employee using a Workspace Enterprise Standard license was terminated from your organization. You need to ensure that the former employee no longer has access to their Workspace account and preserve access to the former employee\u2019s documents for the manager and the team.You want to minimize license cost. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Delete the former employee\u2019s Workspace account."
+      },
+      {
+        "letra": "B",
+        "texto": "Suspend former employee\u2019s Workspace account."
+      },
+      {
+        "letra": "C",
+        "texto": "Reset the password of the former employee and keep their Workspace license active."
+      },
+      {
+        "letra": "D",
+        "texto": "Switch the license type of the former employee\u2019s Workspace account to an Archived User license.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization's employees frequently collaborate with external clients and vendors by using Google Meet. There are active instances of unsupervised meetings within your organization that do not have a host, and unsupervised meetings that continue after an event has completed. You want to end all meetings that are being used inappropriately as quickly as possible. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "End all unsupervised meetings by using the Google Meet APIs."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable Host Management for Google Meet, and train internal host employees how to end meetings for everyone."
+      },
+      {
+        "letra": "C",
+        "texto": "Turn off Google Meet in the Admin console for your organization. Turn Google Meet back on after two minutes."
+      },
+      {
+        "letra": "D",
+        "texto": "Identify and end all unsupervised meetings by using the security investigation tool.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization uses live-streaming to host large Google Meet meetings. You need to limit the participation to affiliated Google Workspace domains by using the Admin console. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add the Trusted Workspace domain names in the Stream dialog box."
+      },
+      {
+        "letra": "B",
+        "texto": "Turn off live streaming to Youtube."
+      },
+      {
+        "letra": "C",
+        "texto": "Add participants to an organizational unit (OU). Turn on live streaming."
+      },
+      {
+        "letra": "D",
+        "texto": "Turn on in-house live streaming. Invite users from affiliated domains.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "A"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

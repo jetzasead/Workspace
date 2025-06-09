@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 5-1</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 5-1</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your company is undergoing a regulatory compliance audit. As part of the audit, you are required to demonstrate that you can preserve all electronic communications related to a specific project for a potential legal discovery process. You need to configure Google Vault to accomplish this goal. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use the security investigation report to show Vault log events."
+      },
+      {
+        "letra": "B",
+        "texto": "Use the search and export functionality to identify all relevant communications within the project timeframe."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a matter and a hold on all project-related data sources such as Email, Chat, and Drive within Google Workspace."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a custom retention policy for the project data. Ensure that the policy covers the required retention period.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Several employees from your finance department are collaborating on a long-term, multi-phase project. You need to create a confidential group for this project as quickly as possible. You also want to minimize management overhead. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a Google Group by using Google Cloud Directory Sync (GCDS) to automatically sync the members."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a dynamic group and define the Department user attribute as a condition for membership with the value as the finance department."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Group and update the settings to allow anyone in the organization to join the group."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a Google Group and appoint a group admin to manage the membership of this group.Reveal SolutionHide SolutionDiscussion3"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Today your company signed up for Google Workspace Business Starter with an existing domain name. You want to add team members and manage their access to email and other services. However, you are unable to create new user accounts or change user settings. You need to fix this problem. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Run the Transfer tool to bring unmanaged users to your Workspace account."
+      },
+      {
+        "letra": "B",
+        "texto": "Check domain ownership in the DNS settings."
+      },
+      {
+        "letra": "C",
+        "texto": "Wait 24 hours after signing up for the features to become active."
+      },
+      {
+        "letra": "D",
+        "texto": "Upgrade to a Google Workspace Enterprise edition.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "A team of temporary employees left your organization after completing a shared project. Per company policy, you need to disable their Google Workspace accounts while preserving all project data and related communications in Google Vault for a minimum of two years. You want to comply with this policy while minimizing cost. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Purchase and assign Archived User licenses to the former employees."
+      },
+      {
+        "letra": "B",
+        "texto": "Transfer the former employees\u2019 files and data to active user accounts. Delete the former employees\u2019 Workspace accounts."
+      },
+      {
+        "letra": "C",
+        "texto": "Purchase additional user licenses and suspend the former employees\u2019 accounts."
+      },
+      {
+        "letra": "D",
+        "texto": "Move the former employees to their own organizational unit (OU) and disable access to Google services for that OU.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "The legal department at your organization is working on a time-critical merger and acquisition (M&A) deal. They urgently require access to specific email communications from an employee who is currently on leave. The organization\u2019s current retention policy is set to indefinite. You need to retrieve the required emails for the legal department in a manner that ensures data privacy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Instruct the IT department to directly access and forward the relevant emails to the legal department."
+      },
+      {
+        "letra": "B",
+        "texto": "Temporarily grant the legal department access to the employee\u2019s email account with a restricted scope that is limited to the M&A-related emails."
+      },
+      {
+        "letra": "C",
+        "texto": "Ask a colleague with delegate access to the employee's mailbox to identify and forward the relevant emails to the legal department."
+      },
+      {
+        "letra": "D",
+        "texto": "Use Google Vault to create a matter specific to the M&A deal. Search for relevant emails within the employee's mailbox. Export and share relevant emails with your legal department.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

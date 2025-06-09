@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 5-7</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 5-7</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "You work for a healthcare provider that uses an external medical billing company to manage patient records and invoices. Your organization\u2019s employees need to share patient documents with the billing company\u2019s employees for processing. You need to configure access so the medical billing company\u2019s employees can view and edit the documents, but they cannot delete the documents. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a shared drive that is managed by your organization\u2019s employees. Grant Contributor access to the billing company\u2019s staff."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a shared drive. Grant Content Manager access to your organization\u2019s employees and the billing company."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a group, and add the employees from your organization and the billing company. Create a shared folder on Google Drive. Grant Editor access to the group"
+      },
+      {
+        "letra": "D",
+        "texto": "Restrict access for the medical billing company\u2019s employees by using Data Loss Prevention (DLP) policies.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are migrating your organization\u2019s email to Google Workspace. Your organization uses the terramearth.com email domain. You need to configure Google Workspace to receive emails sent to terramearth.com. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add terramearth.com as a primary, secondary, or alias domain in Google Workspace. Update the Mail Exchange (MX) records with your domain registrar to direct mail flow to Google\u2019s mail servers."
+      },
+      {
+        "letra": "B",
+        "texto": "Establish a Transport Layer Security (TLS) connection between your company\u2019s existing mail servers and Google\u2019s mail servers"
+      },
+      {
+        "letra": "C",
+        "texto": "Configure an email address in Google Workspace to capture emails sent to unverified domains, including terramearth.com."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a domain alias for terramearth.com in Google Workspace. Configure email forwarding to redirect emails to the new Google Workspace accounts.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization is migrating their current on-premises email solution to Google Workspace. You need to ensure that emails sent to your domain are correctly routed to Gmail. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Change the Mail Exchange (MX) records in your current email domain\u2019s DNS settings to point to Google\u2019s mail servers."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up email forwarding from your on-premises email provider to Gmail."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a content compliance rule to filter and route incoming emails."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure SPF, DKIM, and DMARC records in your current email domain\u2019s DNS settings.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your compliance team has observed that employees at your organization are frequently resetting their passwords and is concerned about account hijacking. You need to create a solution to notify the compliance team whenever a user updates or resets their password. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create and enforce a new password policy for all users in your organization."
+      },
+      {
+        "letra": "B",
+        "texto": "Move all compliance team members into a separate organizational unit (OU). Create and enforce a new password policy for the members of this OU."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule that is triggered by the User\u2019s password changed event. Add compliance team members as email recipients."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a new alert by using user log events. Check that the challenge type is \u201cPassword\u201d, and add the compliance team as email recipients.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Multiple users in your organization are reporting that Calendar invitations sent from a specific department are not being received. You verified that the invitations are being sent and there are no error messages in the sender\u2019s logs. You want to troubleshoot the issue. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Analyze the message headers of the sent invitations by using the Google Admin Toolbox to identify any delivery issues."
+      },
+      {
+        "letra": "B",
+        "texto": "Verify that the senders in the specific department have the necessary permissions to share their calendars externally and send invitations outside of the organization."
+      },
+      {
+        "letra": "C",
+        "texto": "Disable and re-enable the Calendar service for the affected users to refresh their connection."
+      },
+      {
+        "letra": "D",
+        "texto": "Check the affected users\u2019 Calendar settings to confirm whether they have accidentally blocked invitations from the specific department.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

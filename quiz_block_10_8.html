@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 10-8</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 10-8</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "You\u2019ve noticed an increase in phishing emails that contain links to malicious files hosted on external Google Drives. These files often mimic legitimate documents and trick users into granting access to their accounts. You need to prevent users from accessing these malicious external Drive files, but allow them to access legitimate external files. What should you do? (Choose two.)",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Enforce stricter password policies."
+      },
+      {
+        "letra": "B",
+        "texto": "Conduct regular security awareness training to educate users."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Drive trust rule that blocks all external domains except for a pre-approved list of trusted partners."
+      },
+      {
+        "letra": "D",
+        "texto": "Deploy advanced malware detection software on all user devices to scan and block malicious files.E.Implement two-factor authentication for all users.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "A user accessing sensitive data is experiencing repeated issues with accessing certain files in Google Drive from their laptop by using the Chrome browser. When you contact Google support, the support representative asks to review an HTTP archive file recording (HAR). You need to share logs with Google support without compromising data privacy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Open the HAR file in a text editor and delete sensitive information. Upload the HAR file to Google Drive and share the file only with the Google support representative"
+      },
+      {
+        "letra": "B",
+        "texto": "Ask the Google support representative for access to a Google Drive folder used by the Google support team. Upload the HAR file."
+      },
+      {
+        "letra": "C",
+        "texto": "Share your screen with the Google support representative so they can view the file without having a copy of the file."
+      },
+      {
+        "letra": "D",
+        "texto": "Upload the HAR file to Google Drive and share the file with the Google support representative.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Per regulatory requirements, your company is required to keep the data of employees located in Germany within Europe and the data of employees located in the US within the US. The employees in Germany are in a separate organizational unit (OU) than employees in the US. You need to ensure that where employee data is stored is in compliance with the location regulations.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Instruct employees to use Drive for desktop to keep documents on their corporate computers."
+      },
+      {
+        "letra": "B",
+        "texto": "Create two Groups. Assign employees into the Germany or US Group based on their location. Use Google Drive trust rules to prevent sharing between the Groups."
+      },
+      {
+        "letra": "C",
+        "texto": "Navigate to the Data Regions function in the Admin console. Select the Europe region for employees in Germany, and select the US region for US employees."
+      },
+      {
+        "letra": "D",
+        "texto": "Navigate to the Data Regions function in the Admin console. Select \u201cNo preference.\u201dReveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

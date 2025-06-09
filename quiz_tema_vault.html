@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz tema-Vault</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz tema-Vault</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your company is undergoing a regulatory compliance audit. As part of the audit, you are required to demonstrate that you can preserve all electronic communications related to a specific project for a potential legal discovery process. You need to configure Google Vault to accomplish this goal. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use the security investigation report to show Vault log events."
+      },
+      {
+        "letra": "B",
+        "texto": "Use the search and export functionality to identify all relevant communications within the project timeframe."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a matter and a hold on all project-related data sources such as Email, Chat, and Drive within Google Workspace."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a custom retention policy for the project data. Ensure that the policy covers the required retention period.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "A team of temporary employees left your organization after completing a shared project. Per company policy, you need to disable their Google Workspace accounts while preserving all project data and related communications in Google Vault for a minimum of two years. You want to comply with this policy while minimizing cost. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Purchase and assign Archived User licenses to the former employees."
+      },
+      {
+        "letra": "B",
+        "texto": "Transfer the former employees\u2019 files and data to active user accounts. Delete the former employees\u2019 Workspace accounts."
+      },
+      {
+        "letra": "C",
+        "texto": "Purchase additional user licenses and suspend the former employees\u2019 accounts."
+      },
+      {
+        "letra": "D",
+        "texto": "Move the former employees to their own organizational unit (OU) and disable access to Google services for that OU.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "The legal department at your organization is working on a time-critical merger and acquisition (M&A) deal. They urgently require access to specific email communications from an employee who is currently on leave. The organization\u2019s current retention policy is set to indefinite. You need to retrieve the required emails for the legal department in a manner that ensures data privacy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Instruct the IT department to directly access and forward the relevant emails to the legal department."
+      },
+      {
+        "letra": "B",
+        "texto": "Temporarily grant the legal department access to the employee\u2019s email account with a restricted scope that is limited to the M&A-related emails."
+      },
+      {
+        "letra": "C",
+        "texto": "Ask a colleague with delegate access to the employee's mailbox to identify and forward the relevant emails to the legal department."
+      },
+      {
+        "letra": "D",
+        "texto": "Use Google Vault to create a matter specific to the M&A deal. Search for relevant emails within the employee's mailbox. Export and share relevant emails with your legal department.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Several employees at your company received messages with links to malicious websites. The messages appear to have been sent by your company\u2019s human resources department. You need to identify which users received the emails and prevent a recurrence of similar incidents in the future. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Search the sender\u2019s email address by using Email Log Search. Identify the users that received the messages. Instruct them to mark them as spam in Gmail, delete the messages, and empty the trash."
+      },
+      {
+        "letra": "B",
+        "texto": "Search for the sender\u2019s email address by using the security investigation tool. Mark the messages as phishing. Add the sender\u2019s email address to the Blocked senders list in the Spam, Phishing and Malware setting in Gmail to automatically reject future messages."
+      },
+      {
+        "letra": "C",
+        "texto": "Collect a list of users who received the messages. Search the recipients\u2019 email addresses in Google Vault. Export and download the malicious emails in PST file format. Add the sender\u2019s email address to a quarantine list setting in Gmail to quarantine any future emails from the sender."
+      },
+      {
+        "letra": "D",
+        "texto": "Search for the sender\u2019s email address by using the security investigation tool. Delete the messages. Turn on the safety options for spoofing and authentication protection in Gmail settings.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization is concerned about unauthorized access attempts. You want to implement a security measure that makes users change their password if there are twenty or more failed login attempts within one hour. You want to use the most effective and efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up a Chrome action rule to restrict users from defined ChromeOS actions after twenty failed password attempts."
+      },
+      {
+        "letra": "B",
+        "texto": "Create an activity rule for user log events, define a time period and threshold, and select an Action for the rule to force a password change."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule for live-state data sources that meets the required time period and threshold to identify users who need to change their password."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable email alerts to notify users that they need to change their password.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "A user in your organization received a spam email that they reported for further investigation. You need to find out more details and the scope of this incident as quickly as possible. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Conduct a Vault search to find this email and identify if additional users were affected."
+      },
+      {
+        "letra": "B",
+        "texto": "Conduct a search to find all emails sent by the sender by using the Gmail API."
+      },
+      {
+        "letra": "C",
+        "texto": "Conduct an Email reports search to find this email and all of the email\u2019s recipients."
+      },
+      {
+        "letra": "D",
+        "texto": "Conduct a search in the security investigation tool to find this email, and identify whether additional users were affected.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization collects credit card information in customer files. You need to implement a policy for your organization\u2019s Google Drive data that prevents the accidental sharing of files that contain credit card numbers with external users. You also need to record any sharing incidents for reporting. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a data loss prevention (DLP) rule that uses the predefined credit card number detector, sets the action to \u201cblock external sharing\u201d, and enables the \u201cLog event\u201d option."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable Gmail content compliance, and create a rule to block email attachments containing credit card numbers from being sent to external recipients."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement a third-party data loss prevention solution to integrate with Drive and provide advanced content detection capabilities."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure a data retention policy to automatically delete files containing credit card numbers after a specified period.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You need to ensure that data owned by former employees remains available in Google Vault. You want to use the most cost-effective solution.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Migrate the former employees\u2019 Gmail to their manager(s) by using the data migration service during the deletion process. Transfer the former employees\u2019 Google Drive files to a new owner."
+      },
+      {
+        "letra": "B",
+        "texto": "Change the Google account passwords of the former employees."
+      },
+      {
+        "letra": "C",
+        "texto": "Suspend the former employees\u2019 Google accounts. Create an organizational unit (OU). Move the former employees into that OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Assign an Archived User license to the former employees\u2019 Google accounts.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization handles a significant amount of sensitive customer data and must follow strict industry regulations. To meet an upcoming compliance deadline, you need to quickly implement a solution that automatically classifies files stored in Google Drive based on the content of files.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create data loss prevention (DLP) rules for Drive. Configure the rules to apply Drive labels based on content."
+      },
+      {
+        "letra": "B",
+        "texto": "Apply Drive labels based on content. Use Google Vault to create retention rules based on Drive labels, ensuring that data is kept for the required duration."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement a third-party data governance tool that integrates with Drive and provides advanced classification capabilities."
+      },
+      {
+        "letra": "D",
+        "texto": "Add users into organizational units (OUs). Configure default file classification in Drive for the desired OUs.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company\u2019s legal department has issued a litigation hold that requires you to preserve all data related to a specific project. You need to ensure that all data for this project, including emails, documents, and chats, are preserved indefinitely and cannot be deleted by users. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a hold in Google Vault that includes all users and data sources associated with the project."
+      },
+      {
+        "letra": "B",
+        "texto": "Assign an Archived User license to all users involved in the project."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up a retention rule in Google Vault that retains all data from Gmail and Drive indefinitely."
+      },
+      {
+        "letra": "D",
+        "texto": "Export all project related data from Google Workspace and store the data in a separate, secure location.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "An employee is leaving your company and has numerous files stored in My Drive. Their manager wants to retain access to these files. You need to offboard the departing employee\u2019s Google Workspace account while ensuring that the manager can still access the files while following Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use Google Vault to establish a retention policy for the organizational unit (OU) of the departing employee. Assign the Google Archived User license."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the departing employee to share their My Drive folder with the manager before leaving. Delete the Google Workspace account on the departing employee\u2019s last day."
+      },
+      {
+        "letra": "C",
+        "texto": "Download the departing employee\u2019s Drive data by using Google Takeout. Upload the data to the manager\u2019s Drive before deleting the departing employee\u2019s Google Workspace account."
+      },
+      {
+        "letra": "D",
+        "texto": "Transfer ownership of the departing employee\u2019s files to the manager during the user deletion process.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You are configuring Google Chat for your organization. Using the Adin console, you want to enable employees to view their chat history by default and allow employees to turn off chat history. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure Google Vault to retain all Chat messages, and exclude organizational units (OUs) with users who want to turn Chat history off."
+      },
+      {
+        "letra": "B",
+        "texto": "Set the space history setting to OFF and chat history to ON."
+      },
+      {
+        "letra": "C",
+        "texto": "Set the top-level default conversation history setting to ON and allow users to change their history setting."
+      },
+      {
+        "letra": "D",
+        "texto": "Set the top-level default conversation history settings to OFF and allow users in each organizational unit (OU) to change their history setting.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 25-3</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 25-3</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your organization allows employees to use their personal mobile devices to check their work emails. You need to remove the employee\u2019s work email data from their phone when they leave the organization. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up basic mobile management on the devices."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management on the devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up data protection rules to prevent data sharing externally."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up 2SV authentication on the devices.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "External sharing at your company is only permitted for the sales and marketing department. Engineering is not allowed to share externally. You need to configure the sharing settings to comply with this policy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use a data loss prevention (DLP) solution to control external sharing based on user groups."
+      },
+      {
+        "letra": "B",
+        "texto": "Create separate shared drives for each department with different external sharing settings."
+      },
+      {
+        "letra": "C",
+        "texto": "Create organizational units (OUs) for each department. Configure different external sharing settings for each OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure Drive trust rules to restrict the engineering department from sharing externally.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company has purchased Gemini licenses for a subset of employees. You need to ensure that only users in the marketing and sales departments have access to Gemini features by using the most efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a script to assign a Gemini license to new users if they are in marketing or sales. Run the script daily."
+      },
+      {
+        "letra": "B",
+        "texto": "Create an organizational unit (OU) for marketing and sales. Assign the Gemini licenses to that OU, and enable Gemini for that OU only."
+      },
+      {
+        "letra": "C",
+        "texto": "Assign Gemini licenses to each user in the marketing and sales departments."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable Gemini for the entire organization. Instruct users in other departments not to use Gemini.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company wants to enable single sign-on (SSO) for its employees to access a newly acquired cloud-based marketing platform. The marketing platform vendor has confirmed SAML 2.0 compatibility and provided the necessary metadata. You need to streamline user access and centralize authentication through Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Request an API key from the marketing platform vendor for SAML integration."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable two-factor authentication for all users to enhance security before implementing SSO."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct employees to log in to the marketing platform using the Sign In with Google functionality."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a new SAML application in the Google Admin console.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization handles a significant amount of sensitive customer data and must follow strict industry regulations. To meet an upcoming compliance deadline, you need to quickly implement a solution that automatically classifies files stored in Google Drive based on the content of files.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create data loss prevention (DLP) rules for Drive. Configure the rules to apply Drive labels based on content."
+      },
+      {
+        "letra": "B",
+        "texto": "Apply Drive labels based on content. Use Google Vault to create retention rules based on Drive labels, ensuring that data is kept for the required duration."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement a third-party data governance tool that integrates with Drive and provides advanced classification capabilities."
+      },
+      {
+        "letra": "D",
+        "texto": "Add users into organizational units (OUs). Configure default file classification in Drive for the desired OUs.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company provides shared Chromebook workstations for employees to access sensitive company data. You must configure the devices to ensure no sensitive data is stored locally and that browsing data is cleared after each use. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Force ephemeral mode in Chrome. Disable offline access for sensitive Workspace apps like Docs, Sheets, and Drive."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable the Manage Guest Session functionality, and set the maximum user session length."
+      },
+      {
+        "letra": "C",
+        "texto": "Force ephemeral mode in Chrome. Allow offline access for all Workspace apps with strict expiration times."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable offline access for all Workspace apps. Enable incognito mode for Chrome browsing sessions.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "A new user at your organization is unable to access Google Meet. You have verified that the user\u2019s account is active and the correct licenses are assigned. You need to resolve the access issue. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Check the user\u2019s browser settings to ensure that Meet is not blocked."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the user to clear their browser\u2019s cache and cookies."
+      },
+      {
+        "letra": "C",
+        "texto": "Restart the user\u2019s computer to refresh their network connection."
+      },
+      {
+        "letra": "D",
+        "texto": "Verify that Meet is enabled as a service for the user\u2019s account in the Admin console.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "During a recent Google Meet video conference, several employees reported that they could not hear the presenters. The presenters confirmed that their laptops\u2019 microphones were working. The affected employees were all using company-issued laptops. You need to quickly diagnose the source of the issue. What should you do first?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Verify that the audio drivers on the affected laptops are up-to-date and functioning correctly."
+      },
+      {
+        "letra": "B",
+        "texto": "Check the Admin console to determine whether there are recent Meet-related notifications or alerts."
+      },
+      {
+        "letra": "C",
+        "texto": "Check if Context-Aware access rules were set to prevent Meet access from the user\u2019s network location."
+      },
+      {
+        "letra": "D",
+        "texto": "Use the Meet quality tool for each affected user to analyze their microphone settings and configurations during the meeting.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization wants to prevent a group of users from logging into their Google Drive when they are traveling internationally for business.You have added these users to an organizational unit (OU). You need to secure the users\u2019 access to the Google Drive app to meet this requirement.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Disable Google Drive for users in the OU."
+      },
+      {
+        "letra": "B",
+        "texto": "Define location-based access levels. Assign the levels to the Google Drive app for the OU."
+      },
+      {
+        "letra": "C",
+        "texto": "Require 2-step verification (2SV) when users in the OU sign in."
+      },
+      {
+        "letra": "D",
+        "texto": "Define user-based access levels. Assign the levels to the Google Drive app for the OU.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company is transitioning to Google Workspace from legacy communication and collaboration applications. User accounts are managed in Active Directory and synced to Google Workspace by using Google Cloud Directory Sync (GCDS). Your company is implementing a new security policy for all accounts that requires complex passwords. Passwords must be at least 20 characters long, contain 3 symbols, 4 numbers, and 2 capital letters.You need to enforce the new password policy in Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Share the instructions for changing a Google account password with your users. Monitor password strength in the Google Admin console as users change their passwords."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable strong password enforcement and require a minimum length of 20 characters at the top-level organizational unit."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a password policy in Active Directory. Install Password Sync on the global catalog servers for Active Directory and require a password change for your users."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a password policy in Active Directory. Enable password synchronization in GCDS.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your company\u2019s legal department has issued a litigation hold that requires you to preserve all data related to a specific project. You need to ensure that all data for this project, including emails, documents, and chats, are preserved indefinitely and cannot be deleted by users. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a hold in Google Vault that includes all users and data sources associated with the project."
+      },
+      {
+        "letra": "B",
+        "texto": "Assign an Archived User license to all users involved in the project."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up a retention rule in Google Vault that retains all data from Gmail and Drive indefinitely."
+      },
+      {
+        "letra": "D",
+        "texto": "Export all project related data from Google Workspace and store the data in a separate, secure location.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization allows employees to use their personal devices for work purposes. You want to ensure these devices follow the company\u2019s security policies. You need to choose a mobile management solution that provides minimal passcode enforcement and allows for an admin to remotely wipe a user\u2019s account from the device. You also want to avoid having to install agents on employees\u2019 personal devices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement Google\u2019s advanced management on mobile devices."
+      },
+      {
+        "letra": "B",
+        "texto": "Implement Google\u2019s basic management on mobile devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Enforce a strong password policy, and enforce the password policy at the next sign-in."
+      },
+      {
+        "letra": "D",
+        "texto": "Deploy a third-party mobile device management (MDM) solution.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "An employee is leaving your company and has numerous files stored in My Drive. Their manager wants to retain access to these files. You need to offboard the departing employee\u2019s Google Workspace account while ensuring that the manager can still access the files while following Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use Google Vault to establish a retention policy for the organizational unit (OU) of the departing employee. Assign the Google Archived User license."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the departing employee to share their My Drive folder with the manager before leaving. Delete the Google Workspace account on the departing employee\u2019s last day."
+      },
+      {
+        "letra": "C",
+        "texto": "Download the departing employee\u2019s Drive data by using Google Takeout. Upload the data to the manager\u2019s Drive before deleting the departing employee\u2019s Google Workspace account."
+      },
+      {
+        "letra": "D",
+        "texto": "Transfer ownership of the departing employee\u2019s files to the manager during the user deletion process.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You need to create an automated application or process that includes connectors to external data, leverages Google Sheets data, and is easily shared as a mobile application. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create an application by using App Engine. Connect the application to your Workspace environment"
+      },
+      {
+        "letra": "B",
+        "texto": "Copy the external data to BigQuery. Use a Connected Sheet to interact with the data."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an AppSheet application to connect the different data sources. Set up the mobile application."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an automation process by using Apps Script. Run the process through Google Sheets.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization recently deployed Google Workspace. Over 3,000 external contacts were shared in public folders in Microsoft Exchange before the implementation. You need to ensure that these external contacts appear to domain users in Gmail. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Export the external contacts to a CSV file, upload the file to Google Drive, and instruct users to import to their My Contacts."
+      },
+      {
+        "letra": "B",
+        "texto": "Use Google Cloud Directory Sync to sync the external contacts from the public folders in Microsoft Exchange to the Directory."
+      },
+      {
+        "letra": "C",
+        "texto": "Use the Domain Shared Contacts API to add the external contacts to the Directory."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a user account, add the external contacts, and delegate them to all users in the domain.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization has experienced a recent increase in unauthorized access attempts to your company\u2019s Google Workspace instance. You need to enhance the security of user accounts while following Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Disable password recovery options to prevent unauthorized individuals from accessing user accounts."
+      },
+      {
+        "letra": "B",
+        "texto": "Implement a strong password policy and enable text messages as the 2-Step Verification (2SV) using text messages."
+      },
+      {
+        "letra": "C",
+        "texto": "Enforce the use of physical security keys as the 2-Step Verification (2SV) method for all users."
+      },
+      {
+        "letra": "D",
+        "texto": "Enforce a strong password policy that requires users to include special characters, numbers, and uppercase letters.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company operates several primary care clinics where employees routinely work with protected health information (PHI). You are in the process of transitioning the organization to Google Workspace from a legacy communication and collaboration system. After you sign the Business Associate Agreement (BAA), you need to ensure that data is handled in compliance with regulations when using Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement a third-party backup service that is also compliant with Google Workspace core services."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a label for Google Drive content to help employees identify sensitive data."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct the staff to not store any PHI in Google Workspace core services, including Google Drive, Docs, Sheets, and Keep."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable integrations with third-party apps and turn off non-core Google services.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You are onboarding a new employee who will use a company-provided Android device. Your company requires the ability to enforce strong security policies on mobile devices, including password complexity requirements and remote device wipe capabilities. You need to choose the appropriate Google Workspace mobile device management solution. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use a third-party mobile device management (MDM) solution to manage the device."
+      },
+      {
+        "letra": "B",
+        "texto": "Allow the employee to use their personal device without enrolling it in any mobile device management (MDM) solution."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement Google\u2019s basic management solution for the mobile device."
+      },
+      {
+        "letra": "D",
+        "texto": "Implement Google\u2019s advanced management solution for the mobile device.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You are configuring Google Chat for your organization. Using the Adin console, you want to enable employees to view their chat history by default and allow employees to turn off chat history. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure Google Vault to retain all Chat messages, and exclude organizational units (OUs) with users who want to turn Chat history off."
+      },
+      {
+        "letra": "B",
+        "texto": "Set the space history setting to OFF and chat history to ON."
+      },
+      {
+        "letra": "C",
+        "texto": "Set the top-level default conversation history setting to ON and allow users to change their history setting."
+      },
+      {
+        "letra": "D",
+        "texto": "Set the top-level default conversation history settings to OFF and allow users in each organizational unit (OU) to change their history setting.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company wants to start using Google Workspace for email. Your domain is verified through a third-party provider. You need to route the email to Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Change your domain\u2019s A record to point to Google\u2019s mail servers."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure a forwarding rule in your current email system to redirect all messages to Gmail."
+      },
+      {
+        "letra": "C",
+        "texto": "Update your domain\u2019s MX records to the Google Workspace MX records provided in the setup instructions."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a CNAME record that maps your domain to \u201cgmail.com.\u201dReveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You\u2019ve noticed an increase in phishing emails that contain links to malicious files hosted on external Google Drives. These files often mimic legitimate documents and trick users into granting access to their accounts. You need to prevent users from accessing these malicious external Drive files, but allow them to access legitimate external files. What should you do? (Choose two.)",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Enforce stricter password policies."
+      },
+      {
+        "letra": "B",
+        "texto": "Conduct regular security awareness training to educate users."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Drive trust rule that blocks all external domains except for a pre-approved list of trusted partners."
+      },
+      {
+        "letra": "D",
+        "texto": "Deploy advanced malware detection software on all user devices to scan and block malicious files.E.Implement two-factor authentication for all users.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "A user accessing sensitive data is experiencing repeated issues with accessing certain files in Google Drive from their laptop by using the Chrome browser. When you contact Google support, the support representative asks to review an HTTP archive file recording (HAR). You need to share logs with Google support without compromising data privacy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Open the HAR file in a text editor and delete sensitive information. Upload the HAR file to Google Drive and share the file only with the Google support representative"
+      },
+      {
+        "letra": "B",
+        "texto": "Ask the Google support representative for access to a Google Drive folder used by the Google support team. Upload the HAR file."
+      },
+      {
+        "letra": "C",
+        "texto": "Share your screen with the Google support representative so they can view the file without having a copy of the file."
+      },
+      {
+        "letra": "D",
+        "texto": "Upload the HAR file to Google Drive and share the file with the Google support representative.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Per regulatory requirements, your company is required to keep the data of employees located in Germany within Europe and the data of employees located in the US within the US. The employees in Germany are in a separate organizational unit (OU) than employees in the US. You need to ensure that where employee data is stored is in compliance with the location regulations.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Instruct employees to use Drive for desktop to keep documents on their corporate computers."
+      },
+      {
+        "letra": "B",
+        "texto": "Create two Groups. Assign employees into the Germany or US Group based on their location. Use Google Drive trust rules to prevent sharing between the Groups."
+      },
+      {
+        "letra": "C",
+        "texto": "Navigate to the Data Regions function in the Admin console. Select the Europe region for employees in Germany, and select the US region for US employees."
+      },
+      {
+        "letra": "D",
+        "texto": "Navigate to the Data Regions function in the Admin console. Select \u201cNo preference.\u201dReveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

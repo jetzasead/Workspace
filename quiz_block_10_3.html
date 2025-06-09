@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 10-3</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 10-3</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "You are configuring email for your company\u2019s Google Workspace account. The company wants to prevent certain types of files from being sent or received as email attachments in the simplest and most cost-effective way. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Adjust the maximum message size limit to prevent large files from being sent or received."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable the Security Sandbox in Gmail to automatically quarantine emails with suspicious attachments."
+      },
+      {
+        "letra": "C",
+        "texto": "Scan all incoming and outgoing emails for malicious attachments by using an industry standard third-party email security solution."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure an attachment compliance rule in Gmail settings to block specific file types.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization has a Shared Drive with 150 users organized as a group. All users of the group need to be able to add and edit files, but the ability to move, delete, and share content must be limited to a single user. You need to configure the shared drive to meet these requirements efficiently.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a folder inside the shared drive. Share the files with the group by using the share function."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a folder inside the shared drive. Share the folder link with the group."
+      },
+      {
+        "letra": "C",
+        "texto": "In the Admin console, assign Contributor access for the shared drive to each user. Assign Content Manager access for the shared drive to the single user."
+      },
+      {
+        "letra": "D",
+        "texto": "In the Admin console, assign Contributor access for the shared drive to the group. Assign Content Manager access for the shared drive to the single user.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your company wants to minimize distractions and inappropriate content in their Google Chat spaces. You need to give trusted employees the ability to remove messages and ban users from specific Chat spaces. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Assign the trusted employees as moderators for the relevant Chat spaces."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a data loss prevention (DLP) rule that blocks inappropriate content from being shared"
+      },
+      {
+        "letra": "C",
+        "texto": "Use the security investigation tool to audit and monitor Chat messages."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable all Chat spaces except those specifically approved by management.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization acquired a small agency. You need to create user accounts for these new employees. The new users must be able to use their new organization\u2019s email address and their email address with the sub-agency domain name. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Redirect the acquired domain to Google\u2019s MX records and add the account as a \u201csend as\u201d address."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up the acquired agency as a secondary domain from the Manage domains page."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up the acquired agency as a user alias domain from the Manage domains page."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up the acquired agency as a secondary domain and swap it to the primary domain.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "The current data storage limit for the sales organizational unit (OU) at your company is set at 10GB per user. A subset of sales representatives in that OU need 100GB of storage across shared services. You need to increase the storage for only the subset of sales representatives by using the least disruptive approach and the fewest configuration steps. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Move the subset of users to a sub-OU, and assign a 100GB storage limit to that sub-OU."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the subset of users to store their documents in a Shared Drive with a 100GB limit."
+      },
+      {
+        "letra": "C",
+        "texto": "Change the storage limit of the sales OU to 100G"
+      },
+      {
+        "letra": "B",
+        "texto": ""
+      },
+      {
+        "letra": "D",
+        "texto": "Create a configuration group, and add the subset of users to that group. Set the group storage limit to 100G"
+      },
+      {
+        "letra": "B",
+        "texto": "Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your company\u2019s security team should be able to investigate unauthorized external file sharing. You need to ensure that the security team can use the security investigation tool and you must follow the principle of least privilege. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Grant the super admin role to a delegate from the security team."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a pre-built reporting role. Assign the role to the security team alias."
+      },
+      {
+        "letra": "C",
+        "texto": "Share the Drive audit log with the security team."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a custom admin role with security center privileges. Assign the role to the individual security team members.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Users at your company are reporting that they are not receiving some emails in their corporate Gmail account. You have checked the Google Workspace Status Dashboard and you found no service disruptions. You need to identify the root cause of the problem and resolve the mail delivery issues. What should you do? (Choose two.)",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use Email Log Search (ELS) to identify specific delivery failures."
+      },
+      {
+        "letra": "B",
+        "texto": "Verify whether the organization\u2019s Mail Exchange (MX) records are correctly configured."
+      },
+      {
+        "letra": "C",
+        "texto": "Check the users\u2019 spam folders to determine whether emails are being misdirected."
+      },
+      {
+        "letra": "D",
+        "texto": "Investigate the Gmail log events for error messages or unusual patterns.E.Check the senders\u2019 IP addresses in the inbound mail gateway.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are designing a group structure for your company that will be used to grant access to a specific shared drive. You need this solution to automatically add and remove employees based on their job role. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a security group. Add all employees with the desired job role. Grant the security group access to the shared drive."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a distribution list. Add all employees with the desired job role. Grant the distribution list access to the shared drive."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a dynamic group. Set the membership criteria to the desired job role. Grant the dynamic group access to the shared drive."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a configuration group. Add users on an exception basis. Grant the configuration group access to the shared drive.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "An executive at your organization asked you to give their executive administrator access to their Workspace account. You need to ensure that this executive administrator can manage emails in the executive\u2019s account. You need to maintain security and privacy of the executive\u2019s account. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Assist the executive in setting up email forwarding to their executive administrator."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the executive to share their password with their executive administrator."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Group, and add all executive administrators. Enable delegated access to the Group."
+      },
+      {
+        "letra": "D",
+        "texto": "Grant delegated access to the executive\u2019s Gmail account, and assign access to their executive administrator in Gmail settings.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "The innovation team at your organization has a dedicated room with prototype equipment. You need to make the room bookable, add the equipment, and ensure that there are no booking conflicts. Only the innovation team and the sales directors can access this room. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a separate Google Calendar resource for the room. Manually manage booking requests from both teams."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a Google Group for the innovation team and another Google Group for sales directors. Share the room\u2019s calendar with both groups."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Calendar event for the room. Share the event with the innovation team and sales directors."
+      },
+      {
+        "letra": "D",
+        "texto": "Edit the Google Calendar settings for the room resource. Adjust the permission settings so only the innovation team and sales director group can view and book time on this calendar.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

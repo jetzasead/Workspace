@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz tema-Groups</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz tema-Groups</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Several employees from your finance department are collaborating on a long-term, multi-phase project. You need to create a confidential group for this project as quickly as possible. You also want to minimize management overhead. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a Google Group by using Google Cloud Directory Sync (GCDS) to automatically sync the members."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a dynamic group and define the Department user attribute as a condition for membership with the value as the finance department."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Group and update the settings to allow anyone in the organization to join the group."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a Google Group and appoint a group admin to manage the membership of this group.Reveal SolutionHide SolutionDiscussion3"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your organization has a Shared Drive with 150 users organized as a group. All users of the group need to be able to add and edit files, but the ability to move, delete, and share content must be limited to a single user. You need to configure the shared drive to meet these requirements efficiently.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a folder inside the shared drive. Share the files with the group by using the share function."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a folder inside the shared drive. Share the folder link with the group."
+      },
+      {
+        "letra": "C",
+        "texto": "In the Admin console, assign Contributor access for the shared drive to each user. Assign Content Manager access for the shared drive to the single user."
+      },
+      {
+        "letra": "D",
+        "texto": "In the Admin console, assign Contributor access for the shared drive to the group. Assign Content Manager access for the shared drive to the single user.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "The current data storage limit for the sales organizational unit (OU) at your company is set at 10GB per user. A subset of sales representatives in that OU need 100GB of storage across shared services. You need to increase the storage for only the subset of sales representatives by using the least disruptive approach and the fewest configuration steps. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Move the subset of users to a sub-OU, and assign a 100GB storage limit to that sub-OU."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the subset of users to store their documents in a Shared Drive with a 100GB limit."
+      },
+      {
+        "letra": "C",
+        "texto": "Change the storage limit of the sales OU to 100G"
+      },
+      {
+        "letra": "B",
+        "texto": ""
+      },
+      {
+        "letra": "D",
+        "texto": "Create a configuration group, and add the subset of users to that group. Set the group storage limit to 100G"
+      },
+      {
+        "letra": "B",
+        "texto": "Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You are designing a group structure for your company that will be used to grant access to a specific shared drive. You need this solution to automatically add and remove employees based on their job role. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a security group. Add all employees with the desired job role. Grant the security group access to the shared drive."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a distribution list. Add all employees with the desired job role. Grant the distribution list access to the shared drive."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a dynamic group. Set the membership criteria to the desired job role. Grant the dynamic group access to the shared drive."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a configuration group. Add users on an exception basis. Grant the configuration group access to the shared drive.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "An executive at your organization asked you to give their executive administrator access to their Workspace account. You need to ensure that this executive administrator can manage emails in the executive\u2019s account. You need to maintain security and privacy of the executive\u2019s account. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Assist the executive in setting up email forwarding to their executive administrator."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the executive to share their password with their executive administrator."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Group, and add all executive administrators. Enable delegated access to the Group."
+      },
+      {
+        "letra": "D",
+        "texto": "Grant delegated access to the executive\u2019s Gmail account, and assign access to their executive administrator in Gmail settings.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "The innovation team at your organization has a dedicated room with prototype equipment. You need to make the room bookable, add the equipment, and ensure that there are no booking conflicts. Only the innovation team and the sales directors can access this room. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a separate Google Calendar resource for the room. Manually manage booking requests from both teams."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a Google Group for the innovation team and another Google Group for sales directors. Share the room\u2019s calendar with both groups."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Calendar event for the room. Share the event with the innovation team and sales directors."
+      },
+      {
+        "letra": "D",
+        "texto": "Edit the Google Calendar settings for the room resource. Adjust the permission settings so only the innovation team and sales director group can view and book time on this calendar.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You work for a healthcare provider that uses an external medical billing company to manage patient records and invoices. Your organization\u2019s employees need to share patient documents with the billing company\u2019s employees for processing. You need to configure access so the medical billing company\u2019s employees can view and edit the documents, but they cannot delete the documents. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a shared drive that is managed by your organization\u2019s employees. Grant Contributor access to the billing company\u2019s staff."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a shared drive. Grant Content Manager access to your organization\u2019s employees and the billing company."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a group, and add the employees from your organization and the billing company. Create a shared folder on Google Drive. Grant Editor access to the group"
+      },
+      {
+        "letra": "D",
+        "texto": "Restrict access for the medical billing company\u2019s employees by using Data Loss Prevention (DLP) policies.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You work at a large organization that prohibits employees from using Google Sites. However, a task force comprised of three people from five different departments has recently been formed to work on a project assigned by the Office of the CIO. You need to allow the users in this task force to temporarily use Google Sites. You want to use the least disruptive and most efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Turn Google Sites access on for each of the 15 users in the task force."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a configuration group for the task force\u2019s 15 users. Grant Google Sites access to the group."
+      },
+      {
+        "letra": "C",
+        "texto": "Place the 15 task force users into a new organizational unit (OU). Turn on Google Sites access for the OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an access group for the task force\u2019s 15 users. Grant Google Sites access to the group.Reveal SolutionHide SolutionDiscussion4"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your organization is implementing a new customer support process that uses Gmail. You need to create a cost-effective solution that allows external customers to send support request emails to the customer support team. The requests must be evenly distributed among the customer support agents. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a Google Group, enable collaborative inbox settings, set posting permissions to \u201cAnyone on the web\u201d, and add the customer support agents as group members."
+      },
+      {
+        "letra": "B",
+        "texto": "Use delegated access for a specific email address that represents the customer support group, and add the customer support team as delegates for that email address."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Google Group, add the support agents to the group, and set the posting permissions to \u201cPublic.\u201d"
+      },
+      {
+        "letra": "D",
+        "texto": "Set up an inbox for the customer support team. Provide the login credentials to the customer support team.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization has enabled Google Groups for Business to let employees create and manage their own email distribution lists and web forums. You need to ensure that users cannot join external Google Groups with their Google Workspace accounts without interrupting internal group usage. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set the setting for Google Groups for Business called Accessing groups from outside this organization to Private."
+      },
+      {
+        "letra": "B",
+        "texto": "In Additional Google Services, turn Google Groups OFF at the root organizational unit."
+      },
+      {
+        "letra": "C",
+        "texto": "Use the Directory API to change the settings of user-created groups to disable features that allow external users to access, view, or post on groups."
+      },
+      {
+        "letra": "D",
+        "texto": "Set the setting for Google Groups for Business called Default for permission to view conversations to All organization users.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You need to grant a specific set of users in your company access to YouTube, and you want to restrict their access to Merchant Center. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Enable YouTube for all users in the company. Individually restrict access to Merchant Center for specific Groups or organizational units (OUs)."
+      },
+      {
+        "letra": "B",
+        "texto": "Create YouTube and Merchant Center as custom web apps. Apply access policies at the Group or organizational unit (OU) level."
+      },
+      {
+        "letra": "C",
+        "texto": "Contact Google Support and request that they enable YouTube access for the specific set of users and restrict their access to Merchant Center."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable access to YouTube at the Group or organizational unit (OU) level for the subset of users. Disable access to Merchant Center.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "External sharing at your company is only permitted for the sales and marketing department. Engineering is not allowed to share externally. You need to configure the sharing settings to comply with this policy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use a data loss prevention (DLP) solution to control external sharing based on user groups."
+      },
+      {
+        "letra": "B",
+        "texto": "Create separate shared drives for each department with different external sharing settings."
+      },
+      {
+        "letra": "C",
+        "texto": "Create organizational units (OUs) for each department. Configure different external sharing settings for each OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure Drive trust rules to restrict the engineering department from sharing externally.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization wants to prevent a group of users from logging into their Google Drive when they are traveling internationally for business.You have added these users to an organizational unit (OU). You need to secure the users\u2019 access to the Google Drive app to meet this requirement.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Disable Google Drive for users in the OU."
+      },
+      {
+        "letra": "B",
+        "texto": "Define location-based access levels. Assign the levels to the Google Drive app for the OU."
+      },
+      {
+        "letra": "C",
+        "texto": "Require 2-step verification (2SV) when users in the OU sign in."
+      },
+      {
+        "letra": "D",
+        "texto": "Define user-based access levels. Assign the levels to the Google Drive app for the OU.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Per regulatory requirements, your company is required to keep the data of employees located in Germany within Europe and the data of employees located in the US within the US. The employees in Germany are in a separate organizational unit (OU) than employees in the US. You need to ensure that where employee data is stored is in compliance with the location regulations.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Instruct employees to use Drive for desktop to keep documents on their corporate computers."
+      },
+      {
+        "letra": "B",
+        "texto": "Create two Groups. Assign employees into the Germany or US Group based on their location. Use Google Drive trust rules to prevent sharing between the Groups."
+      },
+      {
+        "letra": "C",
+        "texto": "Navigate to the Data Regions function in the Admin console. Select the Europe region for employees in Germany, and select the US region for US employees."
+      },
+      {
+        "letra": "D",
+        "texto": "Navigate to the Data Regions function in the Admin console. Select \u201cNo preference.\u201dReveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

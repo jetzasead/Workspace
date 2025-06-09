@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz 10-6</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz 10-6</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your organization allows employees to use their personal mobile devices to check their work emails. You need to remove the employee\u2019s work email data from their phone when they leave the organization. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up basic mobile management on the devices."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management on the devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up data protection rules to prevent data sharing externally."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up 2SV authentication on the devices.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "External sharing at your company is only permitted for the sales and marketing department. Engineering is not allowed to share externally. You need to configure the sharing settings to comply with this policy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use a data loss prevention (DLP) solution to control external sharing based on user groups."
+      },
+      {
+        "letra": "B",
+        "texto": "Create separate shared drives for each department with different external sharing settings."
+      },
+      {
+        "letra": "C",
+        "texto": "Create organizational units (OUs) for each department. Configure different external sharing settings for each OU."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure Drive trust rules to restrict the engineering department from sharing externally.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company has purchased Gemini licenses for a subset of employees. You need to ensure that only users in the marketing and sales departments have access to Gemini features by using the most efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a script to assign a Gemini license to new users if they are in marketing or sales. Run the script daily."
+      },
+      {
+        "letra": "B",
+        "texto": "Create an organizational unit (OU) for marketing and sales. Assign the Gemini licenses to that OU, and enable Gemini for that OU only."
+      },
+      {
+        "letra": "C",
+        "texto": "Assign Gemini licenses to each user in the marketing and sales departments."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable Gemini for the entire organization. Instruct users in other departments not to use Gemini.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company wants to enable single sign-on (SSO) for its employees to access a newly acquired cloud-based marketing platform. The marketing platform vendor has confirmed SAML 2.0 compatibility and provided the necessary metadata. You need to streamline user access and centralize authentication through Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Request an API key from the marketing platform vendor for SAML integration."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable two-factor authentication for all users to enhance security before implementing SSO."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct employees to log in to the marketing platform using the Sign In with Google functionality."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a new SAML application in the Google Admin console.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization handles a significant amount of sensitive customer data and must follow strict industry regulations. To meet an upcoming compliance deadline, you need to quickly implement a solution that automatically classifies files stored in Google Drive based on the content of files.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create data loss prevention (DLP) rules for Drive. Configure the rules to apply Drive labels based on content."
+      },
+      {
+        "letra": "B",
+        "texto": "Apply Drive labels based on content. Use Google Vault to create retention rules based on Drive labels, ensuring that data is kept for the required duration."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement a third-party data governance tool that integrates with Drive and provides advanced classification capabilities."
+      },
+      {
+        "letra": "D",
+        "texto": "Add users into organizational units (OUs). Configure default file classification in Drive for the desired OUs.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company provides shared Chromebook workstations for employees to access sensitive company data. You must configure the devices to ensure no sensitive data is stored locally and that browsing data is cleared after each use. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Force ephemeral mode in Chrome. Disable offline access for sensitive Workspace apps like Docs, Sheets, and Drive."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable the Manage Guest Session functionality, and set the maximum user session length."
+      },
+      {
+        "letra": "C",
+        "texto": "Force ephemeral mode in Chrome. Allow offline access for all Workspace apps with strict expiration times."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable offline access for all Workspace apps. Enable incognito mode for Chrome browsing sessions.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "A new user at your organization is unable to access Google Meet. You have verified that the user\u2019s account is active and the correct licenses are assigned. You need to resolve the access issue. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Check the user\u2019s browser settings to ensure that Meet is not blocked."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the user to clear their browser\u2019s cache and cookies."
+      },
+      {
+        "letra": "C",
+        "texto": "Restart the user\u2019s computer to refresh their network connection."
+      },
+      {
+        "letra": "D",
+        "texto": "Verify that Meet is enabled as a service for the user\u2019s account in the Admin console.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "During a recent Google Meet video conference, several employees reported that they could not hear the presenters. The presenters confirmed that their laptops\u2019 microphones were working. The affected employees were all using company-issued laptops. You need to quickly diagnose the source of the issue. What should you do first?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Verify that the audio drivers on the affected laptops are up-to-date and functioning correctly."
+      },
+      {
+        "letra": "B",
+        "texto": "Check the Admin console to determine whether there are recent Meet-related notifications or alerts."
+      },
+      {
+        "letra": "C",
+        "texto": "Check if Context-Aware access rules were set to prevent Meet access from the user\u2019s network location."
+      },
+      {
+        "letra": "D",
+        "texto": "Use the Meet quality tool for each affected user to analyze their microphone settings and configurations during the meeting.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization wants to prevent a group of users from logging into their Google Drive when they are traveling internationally for business.You have added these users to an organizational unit (OU). You need to secure the users\u2019 access to the Google Drive app to meet this requirement.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Disable Google Drive for users in the OU."
+      },
+      {
+        "letra": "B",
+        "texto": "Define location-based access levels. Assign the levels to the Google Drive app for the OU."
+      },
+      {
+        "letra": "C",
+        "texto": "Require 2-step verification (2SV) when users in the OU sign in."
+      },
+      {
+        "letra": "D",
+        "texto": "Define user-based access levels. Assign the levels to the Google Drive app for the OU.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company is transitioning to Google Workspace from legacy communication and collaboration applications. User accounts are managed in Active Directory and synced to Google Workspace by using Google Cloud Directory Sync (GCDS). Your company is implementing a new security policy for all accounts that requires complex passwords. Passwords must be at least 20 characters long, contain 3 symbols, 4 numbers, and 2 capital letters.You need to enforce the new password policy in Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Share the instructions for changing a Google account password with your users. Monitor password strength in the Google Admin console as users change their passwords."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable strong password enforcement and require a minimum length of 20 characters at the top-level organizational unit."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a password policy in Active Directory. Install Password Sync on the global catalog servers for Active Directory and require a password change for your users."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a password policy in Active Directory. Enable password synchronization in GCDS.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>
