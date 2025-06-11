@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz tema-Drive</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz tema-Drive</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your organization has hired temporary employees to work on a sensitive internal project. You need to ensure that the sensitive project data in Google Drive is limited to only internal domain sharing. You do not want to be overly restrictive. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure the Drive sharing options for the domain to internal only."
+      },
+      {
+        "letra": "B",
+        "texto": "Restrict the Drive sharing options for the domain to allowlisted domains."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Drive DLP rule, and use the sensitive internal Project name as the detector."
+      },
+      {
+        "letra": "D",
+        "texto": "Turn off the Drive sharing setting from the Team dashboard.Reveal SolutionHide SolutionDiscussion7"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "An end user has thousands of files stored in Google Drive. Their files are well organized with Drive labels. You need to advise the end user on how to quickly identify all files that are contracts. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Advise the user to use the Google Drive API to search for files with the keyword “contracts”"
+      },
+      {
+        "letra": "B",
+        "texto": "Advise the user to search in Drive for files with the keyword “contracts”, and use the “modified by me” filter."
+      },
+      {
+        "letra": "C",
+        "texto": "Advise the user to search for files that are labeled as “contracts”."
+      },
+      {
+        "letra": "D",
+        "texto": "Advise the user to use the Investigation tool to search for files with the keyword “contracts” and updated by you.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company provides shared Chromebook workstations for employees to access sensitive company data. You must configure the devices to ensure no sensitive data is stored locally and that browsing data is cleared after each use. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Force ephemeral mode in Chrome. Disable offline access for sensitive Workspace apps like Docs, Sheets, and Drive."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable the Manage Guest Session functionality, and set the maximum user session length."
+      },
+      {
+        "letra": "C",
+        "texto": "Force ephemeral mode in Chrome. Allow offline access for all Workspace apps with strict expiration times."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable offline access for all Workspace apps. Enable incognito mode for Chrome browsing sessions.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You need to create an automated application or process that includes connectors to external data, leverages Google Sheets data, and is easily shared as a mobile application. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create an application by using App Engine. Connect the application to your Workspace environment"
+      },
+      {
+        "letra": "B",
+        "texto": "Copy the external data to BigQuery. Use a Connected Sheet to interact with the data."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an AppSheet application to connect the different data sources. Set up the mobile application."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an automation process by using Apps Script. Run the process through Google Sheets.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company operates several primary care clinics where employees routinely work with protected health information (PHI). You are in the process of transitioning the organization to Google Workspace from a legacy communication and collaboration system. After you sign the Business Associate Agreement (BAA), you need to ensure that data is handled in compliance with regulations when using Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement a third-party backup service that is also compliant with Google Workspace core services."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a label for Google Drive content to help employees identify sensitive data."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct the staff to not store any PHI in Google Workspace core services, including Google Drive, Docs, Sheets, and Keep."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable integrations with third-party apps and turn off non-core Google services.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "A user accessing sensitive data is experiencing repeated issues with accessing certain files in Google Drive from their laptop by using the Chrome browser. When you contact Google support, the support representative asks to review an HTTP archive file recording (HAR). You need to share logs with Google support without compromising data privacy. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Open the HAR file in a text editor and delete sensitive information. Upload the HAR file to Google Drive and share the file only with the Google support representative"
+      },
+      {
+        "letra": "B",
+        "texto": "Ask the Google support representative for access to a Google Drive folder used by the Google support team. Upload the HAR file."
+      },
+      {
+        "letra": "C",
+        "texto": "Share your screen with the Google support representative so they can view the file without having a copy of the file."
+      },
+      {
+        "letra": "D",
+        "texto": "Upload the HAR file to Google Drive and share the file with the Google support representative.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are configuring data governance policies for your organization's Google Drive. You need to ensure that employees in the Research and Development department can share files with external users, while employees in the Finance department are blocked from sharing any files externally. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a Drive trust rule that allows external sharing for the Research and Development organizational unit (OU) and another rule that blocks external sharing for the Finance OU"
+      },
+      {
+        "letra": "B",
+        "texto": "Apply an organization-wide data loss prevention (DLP) rule that scans for sensitive information and prevents external sharing of those files. Apply that rule to the Finance organizational unit (OU)"
+      },
+      {
+        "letra": "C",
+        "texto": "Create a separate Google Workspace domain for the Finance organizational unit (OU) and disable external sharing for that domain"
+      },
+      {
+        "letra": "D",
+        "texto": "Enable Vault for the Finance organizational unit (OU) to ensure that all files shared externally are retained and auditable"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "The human resources department notified you of a legal investigation that was started for an employee in the finance department. You need to ensure that this employee's Google Drive data is preserved for at least one year and does not get deleted by the user or by other means. The Google Vault default retention rules for Drive are set for five years. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a hold in Vault for the employee's Drive"
+      },
+      {
+        "letra": "B",
+        "texto": "Place the employee into a separate organizational unit (OU). Create a custom one-year retention rule for this OU"
+      },
+      {
+        "letra": "C",
+        "texto": "Change the Vault default retention rule to one year instead of five"
+      },
+      {
+        "letra": "D",
+        "texto": "Confirm that the Vault default retention rule is set for five years"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your security team is concerned about disgruntled employees downloading large amounts of intellectual property. You need to create an automatic notification if any user downloads more than 500 files from Google Drive within a one-hour period. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure a Data Loss Prevention (DLP) rule for Drive"
+      },
+      {
+        "letra": "B",
+        "texto": "Use the alert center to review Drive audit logs for instances where users download a large number of files"
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule in the security investigation tool to monitor Drive download events. Set a threshold to trigger an alert"
+      },
+      {
+        "letra": "D",
+        "texto": "Set up an alert within Google Cloud Monitoring to track the number of Drive API calls and trigger a notification when a user makes an excessive number of download requests"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You recently noticed a suspicious trend in your organization's Google Drive usage. Several users have shared sensitive documents outside the organization, potentially violating your company's data security policy. You need to identify the responsible users and the extent of the unauthorized sharing. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create an activity rule in the Security Center to alert you of future external sharing events"
+      },
+      {
+        "letra": "B",
+        "texto": "Use the security health page to identify misconfigured sharing settings in Drive"
+      },
+      {
+        "letra": "C",
+        "texto": "Review the organization's sharing policies in the Admin console, and update the policies to prevent external sharing"
+      },
+      {
+        "letra": "D",
+        "texto": "Use the security investigation tool to analyze Drive logs and identify the users"
+      }
+    ],
+    "respuesta": "D"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz tema-Gmail</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz tema-Gmail</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Today your company signed up for Google Workspace Business Starter with an existing domain name. You want to add team members and manage their access to email and other services. However, you are unable to create new user accounts or change user settings. You need to fix this problem. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Run the Transfer tool to bring unmanaged users to your Workspace account."
+      },
+      {
+        "letra": "B",
+        "texto": "Check domain ownership in the DNS settings."
+      },
+      {
+        "letra": "C",
+        "texto": "Wait 24 hours after signing up for the features to become active."
+      },
+      {
+        "letra": "D",
+        "texto": "Upgrade to a Google Workspace Enterprise edition.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company distributes an internal newsletter that contains sensitive information to all employees by email. You’ve noticed unauthorized forwarding of this newsletter to external addresses, potentially leading to data leaks. To prevent this, you need to implement a solution that automatically detects and blocks such forwarding while allowing legitimate internal sharing. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add a banner to the newsletter that warns users that external sharing is prohibited."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a Gmail content compliance rule that targets the internal newsletter, identifying instances of external forwarding. Configure the rule to reject the message when such forwarding is detected"
+      },
+      {
+        "letra": "C",
+        "texto": "Develop an Apps Script project by using the Gmail API to scan sent emails for the newsletter content and external recipients. Automatically revoke access for violating users."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a content compliance rule to modify the newsletter subject line, adding a warning against external forwarding.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your organization requires enhanced privacy and security when sending messages to banks and other financial institutions. Your organization uses Gmail, but the banks use various other email providers. You need to maximize privacy and limit access to messages sent and received between your organization and the banks. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up Transport Layer Security (TLS) compliance for inbound and outbound messages with a list of the banks’ email domains. Validate the TLS connections."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure Sender Policy Framework (SPF) and DomainKeys Identified Mail (DKIM) authentication for your email domains."
+      },
+      {
+        "letra": "C",
+        "texto": "Enable Protect against unauthenticated emails in Gmail Safety."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable confidential mode for Gmail. Instruct employees to use confidential mode when sending messages to the banks.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are configuring email for your company’s Google Workspace account. The company wants to prevent certain types of files from being sent or received as email attachments in the simplest and most cost-effective way. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Adjust the maximum message size limit to prevent large files from being sent or received."
+      },
+      {
+        "letra": "B",
+        "texto": "Enable the Security Sandbox in Gmail to automatically quarantine emails with suspicious attachments."
+      },
+      {
+        "letra": "C",
+        "texto": "Scan all incoming and outgoing emails for malicious attachments by using an industry standard third-party email security solution."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure an attachment compliance rule in Gmail settings to block specific file types.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization acquired a small agency. You need to create user accounts for these new employees. The new users must be able to use their new organization’s email address and their email address with the sub-agency domain name. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Redirect the acquired domain to Google’s MX records and add the account as a “send as” address."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up the acquired agency as a secondary domain from the Manage domains page."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up the acquired agency as a user alias domain from the Manage domains page."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up the acquired agency as a secondary domain and swap it to the primary domain.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Users at your company are reporting that they are not receiving some emails in their corporate Gmail account. You have checked the Google Workspace Status Dashboard and you found no service disruptions. You need to identify the root cause of the problem and resolve the mail delivery issues. What should you do? (Choose two.)",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use Email Log Search (ELS) to identify specific delivery failures."
+      },
+      {
+        "letra": "B",
+        "texto": "Verify whether the organization’s Mail Exchange (MX) records are correctly configured."
+      },
+      {
+        "letra": "C",
+        "texto": "Check the users’ spam folders to determine whether emails are being misdirected."
+      },
+      {
+        "letra": "D",
+        "texto": "Investigate the Gmail log events for error messages or unusual patterns.E.Check the senders’ IP addresses in the inbound mail gateway.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are migrating your organization’s email to Google Workspace. Your organization uses the terramearth.com email domain. You need to configure Google Workspace to receive emails sent to terramearth.com. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add terramearth.com as a primary, secondary, or alias domain in Google Workspace. Update the Mail Exchange (MX) records with your domain registrar to direct mail flow to Google’s mail servers."
+      },
+      {
+        "letra": "B",
+        "texto": "Establish a Transport Layer Security (TLS) connection between your company’s existing mail servers and Google’s mail servers"
+      },
+      {
+        "letra": "C",
+        "texto": "Configure an email address in Google Workspace to capture emails sent to unverified domains, including terramearth.com."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a domain alias for terramearth.com in Google Workspace. Configure email forwarding to redirect emails to the new Google Workspace accounts.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization is migrating their current on-premises email solution to Google Workspace. You need to ensure that emails sent to your domain are correctly routed to Gmail. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Change the Mail Exchange (MX) records in your current email domain’s DNS settings to point to Google’s mail servers."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up email forwarding from your on-premises email provider to Gmail."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a content compliance rule to filter and route incoming emails."
+      },
+      {
+        "letra": "D",
+        "texto": "Configure SPF, DKIM, and DMARC records in your current email domain’s DNS settings.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your compliance team has observed that employees at your organization are frequently resetting their passwords and is concerned about account hijacking. You need to create a solution to notify the compliance team whenever a user updates or resets their password. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create and enforce a new password policy for all users in your organization."
+      },
+      {
+        "letra": "B",
+        "texto": "Move all compliance team members into a separate organizational unit (OU). Create and enforce a new password policy for the members of this OU."
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule that is triggered by the User’s password changed event. Add compliance team members as email recipients."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a new alert by using user log events. Check that the challenge type is “Password”, and add the compliance team as email recipients.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company’s help desk is receiving technical support tickets from employees who report that messages from known external contacts are being sent to the spam label in Gmail. You need to correct the issue and ensure delivery of legitimate emails without introducing additional risk as soon as possible. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Ask employees to select the messages in Gmail that are being delivered to spam and mark them as Not spam."
+      },
+      {
+        "letra": "B",
+        "texto": "Contact the external senders, and tell them to authenticate their sent mail by using domain-based message authentication, reporting, and conformance (DMARC)."
+      },
+      {
+        "letra": "C",
+        "texto": "Turn off more aggressive spam filtering in spam policies that are applied to the users’ organizational unit and add the senders’ mail system IP addresses to the email allowlist."
+      },
+      {
+        "letra": "D",
+        "texto": "Create an address list of approved senders so messages from these users bypass Gmail’s spam filters and recipients can decide whether they are spam or not.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "A user is experiencing intermittent issues accessing their Gmail inbox. Sometimes their Gmail loads slowly, and other times the user encounters error messages that haven’t been documented. You need to effectively troubleshoot this recurring problem. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Check the Google Workspace Status Dashboard for any reported service disruptions."
+      },
+      {
+        "letra": "B",
+        "texto": "Instruct the user to generate a HAR file the next time they experience slowness or an error."
+      },
+      {
+        "letra": "C",
+        "texto": "Instruct the user to try to access Gmail from another device or network to see if the issue persists."
+      },
+      {
+        "letra": "D",
+        "texto": "Instruct the user to clear their browser cache and cookies.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your organization allows employees to use their personal mobile devices to check their work emails. You need to remove the employee’s work email data from their phone when they leave the organization. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up basic mobile management on the devices."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management on the devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up data protection rules to prevent data sharing externally."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up 2SV authentication on the devices.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization recently deployed Google Workspace. Over 3,000 external contacts were shared in public folders in Microsoft Exchange before the implementation. You need to ensure that these external contacts appear to domain users in Gmail. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Export the external contacts to a CSV file, upload the file to Google Drive, and instruct users to import to their My Contacts."
+      },
+      {
+        "letra": "B",
+        "texto": "Use Google Cloud Directory Sync to sync the external contacts from the public folders in Microsoft Exchange to the Directory."
+      },
+      {
+        "letra": "C",
+        "texto": "Use the Domain Shared Contacts API to add the external contacts to the Directory."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a user account, add the external contacts, and delegate them to all users in the domain.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company wants to start using Google Workspace for email. Your domain is verified through a third-party provider. You need to route the email to Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Change your domain’s A record to point to Google’s mail servers."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure a forwarding rule in your current email system to redirect all messages to Gmail."
+      },
+      {
+        "letra": "C",
+        "texto": "Update your domain’s MX records to the Google Workspace MX records provided in the setup instructions."
+      },
+      {
+        "letra": "D",
+        "texto": "Create a CNAME record that maps your domain to “gmail.com.”Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You’ve noticed an increase in phishing emails that contain links to malicious files hosted on external Google Drives. These files often mimic legitimate documents and trick users into granting access to their accounts. You need to prevent users from accessing these malicious external Drive files, but allow them to access legitimate external files. What should you do? (Choose two.)",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Enforce stricter password policies."
+      },
+      {
+        "letra": "B",
+        "texto": "Conduct regular security awareness training to educate users."
+      },
+      {
+        "letra": "C",
+        "texto": "Create a Drive trust rule that blocks all external domains except for a pre-approved list of trusted partners."
+      },
+      {
+        "letra": "D",
+        "texto": "Deploy advanced malware detection software on all user devices to scan and block malicious files.E.Implement two-factor authentication for all users.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "You are employed at a multinational organization with offices around the world. You want to ensure that employees in each region receive region-specific emails in a timely manner with minimal administrative burden. When new employees are hired in each region, you want to automate the email distribution process so that staff changes are reflected quickly. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a Google Group for each region and add the respective employees to the appropriate group"
+      },
+      {
+        "letra": "B",
+        "texto": "Create a security group for each region and apply the location label to allow employees to join based on their region"
+      },
+      {
+        "letra": "C",
+        "texto": "Create a dynamic group for each region by setting the location as a condition"
+      },
+      {
+        "letra": "D",
+        "texto": "Create a Google Group for each region and set permissions that allow employees to discover and join the groups"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You are configuring Gmail for your company and want to implement a layered security approach. You decide to implement industry-standard email authentication protocols. What should you do? (Choose two.)",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Disable IMAP for your organization to prevent external clients from accessing Gmail"
+      },
+      {
+        "letra": "B",
+        "texto": "Set up SPF records to specify authorized mail servers for your domain"
+      },
+      {
+        "letra": "C",
+        "texto": "Configure DKIM to digitally sign outbound emails and verify their origin"
+      },
+      {
+        "letra": "D",
+        "texto": "Configure a blocked senders rule to block all emails from unknown sendersE.Enable a default email quarantine for all users to isolate suspicious emails and determine if the messages haven't been authenticated"
+      }
+    ],
+    "respuesta": "BC"
+  },
+  {
+    "texto": "Your company has recently purchased a new domain name to use for the corporate email addresses. However, you are unable to access certain features in Google Workspace because the domain is not verified. You need to verify the domain. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Contact Google support and request manual verification"
+      },
+      {
+        "letra": "B",
+        "texto": "Request a TXT record be added to the DNS zone by your domain registrar"
+      },
+      {
+        "letra": "C",
+        "texto": "Purchase an SSL certificate for your domain"
+      },
+      {
+        "letra": "D",
+        "texto": "Add an MX record to your DNS zone that points to Google Workspace"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "An employee with a Workspace Business Plus license at your company is going on a long leave soon. The employee will not need access to their Google Workspace data, but their teammates will need access to the employee's data. When the employee returns from leave, you will need to restore access to their account, data, emails, and shared documents. You need to preserve the employee's Workspace data while also minimizing cost while they are on leave. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Suspend their account in the Admin console"
+      },
+      {
+        "letra": "B",
+        "texto": "Purchase an Archived User license and assign the license to the employee"
+      },
+      {
+        "letra": "C",
+        "texto": "Export the account data by using Takeout, and remove the user license in the Admin console"
+      },
+      {
+        "letra": "D",
+        "texto": "Copy the employee's emails, and transfer their file ownership to a teammate. Delete the user account"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your company has recently migrated from an on-premises email solution to Google Workspace. You have successfully added and verified the new primary domain. However, you also want to continue receiving emails sent to your former on-premises email server for a transitional period. You need to ensure that emails sent to your former domain are still delivered to your on-premises server, even though your primary email system is now Google Workspace. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure MX records for the former domain to point to your on-premises email servers"
+      },
+      {
+        "letra": "B",
+        "texto": "Add the former domain as a secondary domain in your Google Workspace settings and verity the domain"
+      },
+      {
+        "letra": "C",
+        "texto": "Add the former domain as a domain alias for the primary domain"
+      },
+      {
+        "letra": "D",
+        "texto": "Adjust the TTL (Time-to-Live) for the former domain to ensure a smooth transition"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You notice an increase in support tickets related to Gmail. Multiple users are reporting that their emails are not loading, and they are receiving error messages. You need to troubleshoot the issue and identify potential causes. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Review the users' email forwarding settings to ensure that emails are not being redirected to incorrect addresses"
+      },
+      {
+        "letra": "B",
+        "texto": "Analyze the users' Gmail labels and filters to determine whether incoming emails are being inadvertently blocked"
+      },
+      {
+        "letra": "C",
+        "texto": "Gather HAR files from affected users to capture network traffic and analyze request/response details"
+      },
+      {
+        "letra": "D",
+        "texto": "Collect the users' browser versions and extensions to identify potential compatibility issues"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization acquired a small agency with only five users. You need to create user accounts for these new employees. Agency users must have their original email address. You have added the agency’s domain as a secondary domain. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Manually create users from the Admin console. When creating the user account, choose the agency domain to be used for the email address"
+      },
+      {
+        "letra": "B",
+        "texto": "Use the Directory API to automatically create the user accounts"
+      },
+      {
+        "letra": "C",
+        "texto": "Bulk upload all users using a CSV file"
+      },
+      {
+        "letra": "D",
+        "texto": "Use Google Cloud Directory Sync (GCDS) to sync users from an existing directory"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company recently installed a free email marketing platform from the Google Workspace Marketplace. The marketing team is unable to access customer contact information or send emails through the platform. You need to identify the cause of the problem. What should you do first?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use the security investigation tool to review Gmail logs"
+      },
+      {
+        "letra": "B",
+        "texto": "Confirm that the \"Manage Third-Party App Access\" setting in the Admin console is enabled"
+      },
+      {
+        "letra": "C",
+        "texto": "Check the OAuth scopes that are granted to the email marketing platform and ensure the platform has access to Contacts and Gmail"
+      },
+      {
+        "letra": "D",
+        "texto": "Verify that the email marketing platform's subscription is active and up-to-date"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

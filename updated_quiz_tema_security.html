@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz tema-Security</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz tema-Security</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your company’s security team has requested two requirements to secure employees’ mobile devices-enforcement of a passcode and remote account wipe functionality. The security team does not want an agent to be installed on the mobile devices or to purchase additional licenses. Employees have a mix of iOS and Android devices. You need to ensure that these requirements are met. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement a third-party enterprise mobility management (EMM) provider."
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management for iOS devices and basic mobile management for Android devices."
+      },
+      {
+        "letra": "C",
+        "texto": "Set up basic management for both iOS and Android devices."
+      },
+      {
+        "letra": "D",
+        "texto": "Set up advanced management for both iOS and Android devices.Reveal SolutionHide SolutionDiscussion2"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company wants to minimize distractions and inappropriate content in their Google Chat spaces. You need to give trusted employees the ability to remove messages and ban users from specific Chat spaces. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Assign the trusted employees as moderators for the relevant Chat spaces."
+      },
+      {
+        "letra": "B",
+        "texto": "Create a data loss prevention (DLP) rule that blocks inappropriate content from being shared"
+      },
+      {
+        "letra": "C",
+        "texto": "Use the security investigation tool to audit and monitor Chat messages."
+      },
+      {
+        "letra": "D",
+        "texto": "Disable all Chat spaces except those specifically approved by management.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "You are configuring Chrome browser security policies for your organization. These policies must restrict certain Chrome apps and extensions.You need to ensure that these policies are applied on the devices regardless of which user logs into the device. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure the allowed list of apps in the Devices page in the apps and extensions settings."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure the Chrome user setting to require users to sign in to use Chrome apps and extensions."
+      },
+      {
+        "letra": "C",
+        "texto": "Configure the Policy Precedence to override the domain-wide policy applied for apps and extensions."
+      },
+      {
+        "letra": "D",
+        "texto": "Require 2SV for user logins.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your organization has experienced a recent increase in unauthorized access attempts to your company’s Google Workspace instance. You need to enhance the security of user accounts while following Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Disable password recovery options to prevent unauthorized individuals from accessing user accounts."
+      },
+      {
+        "letra": "B",
+        "texto": "Implement a strong password policy and enable text messages as the 2-Step Verification (2SV) using text messages."
+      },
+      {
+        "letra": "C",
+        "texto": "Enforce the use of physical security keys as the 2-Step Verification (2SV) method for all users."
+      },
+      {
+        "letra": "D",
+        "texto": "Enforce a strong password policy that requires users to include special characters, numbers, and uppercase letters.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You are onboarding a new employee who will use a company-provided Android device. Your company requires the ability to enforce strong security policies on mobile devices, including password complexity requirements and remote device wipe capabilities. You need to choose the appropriate Google Workspace mobile device management solution. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use a third-party mobile device management (MDM) solution to manage the device."
+      },
+      {
+        "letra": "B",
+        "texto": "Allow the employee to use their personal device without enrolling it in any mobile device management (MDM) solution."
+      },
+      {
+        "letra": "C",
+        "texto": "Implement Google’s basic management solution for the mobile device."
+      },
+      {
+        "letra": "D",
+        "texto": "Implement Google’s advanced management solution for the mobile device.Reveal SolutionHide SolutionDiscussion1"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You are applying device and user policies for employees in your organization who are in different departments. You need each department to have a different set of policies. You want to follow Google-recommended practices. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add all managed users and devices in the top-level organizational unit"
+      },
+      {
+        "letra": "B",
+        "texto": "Create an Access group for each department Configure the applicable policies"
+      },
+      {
+        "letra": "C",
+        "texto": "Create a child organizational unit for each department"
+      },
+      {
+        "letra": "D",
+        "texto": "Create separate top-level organizational units for each department"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You notice an increase in support cases related to Chrome browser within your organization. You suspect a potential outage or service disruption with Chrome browser. You need to determine whether any information has been released about the issue and if there are any projected timelines for its resolution. What should you do first?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use the Help Assistant within the Google Admin console to identify if there was a recent outage"
+      },
+      {
+        "letra": "B",
+        "texto": "Collect a HAR file and use the Google Admin Toolbox to identify potential failures"
+      },
+      {
+        "letra": "C",
+        "texto": "Log a case with Chrome Enterprise support"
+      },
+      {
+        "letra": "D",
+        "texto": "Review the Google Workspace Status Dashboard"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your company has a globally distributed remote work team. You want to ensure all team members adhere to the company’s data security policies and only access authorized systems based on their location and role. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up and mandate the use of a company-wide VPN for all remote access"
+      },
+      {
+        "letra": "B",
+        "texto": "Create and enforce data loss prevention (DLP) rules to control data sharing"
+      },
+      {
+        "letra": "C",
+        "texto": "Configure access control policies with conditional access"
+      },
+      {
+        "letra": "D",
+        "texto": "Implement two-factor authentication for all remote team members"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization wants to ensure that all employees who use Chrome browsers for work adhere to specific security and configuration settings. You need to manage and control the Chrome browsers used within the company while using the least expensive solution. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Remotely wipe all employee devices to ensure that they are using the latest Chrome browser version"
+      },
+      {
+        "letra": "B",
+        "texto": "Enroll the Chrome browsers in your organization's domain and apply Chrome browser policies"
+      },
+      {
+        "letra": "C",
+        "texto": "Use a third-party software deployment solution to manage the Chrome browser"
+      },
+      {
+        "letra": "D",
+        "texto": "Disable all extensions on employee Chrome browsers to prevent any potential security risks"
+      }
+    ],
+    "respuesta": "B"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

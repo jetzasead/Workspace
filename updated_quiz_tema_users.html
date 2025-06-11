@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz tema-Users</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+    h2 { text-align: center; color: #26c6da; }
+    .question { margin-bottom: 20px; }
+    .options label {
+      display: block;
+      background: #2c2c2c;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .options label:hover { background: #333; }
+    button {
+      background: #26c6da;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      background: #263238;
+      padding: 15px;
+      border-left: 5px solid #26c6da;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Google Workspace Quiz tema-Users</h2>
+  <form id="quizForm"></form>
+  <div class="result" id="result"></div>
+  <button onclick="calificar()">Submit</button>
+  <button onclick="reiniciar(event)">Try Again</button>
+</div>
+
+<script>
+let preguntasOriginales = [
+  {
+    "texto": "Your organization needs an approval application for purchases where a user can enter information on the purchase required and then submit it for management approval. You need to suggest a solution to create the application that must be available on both the web and mobile devices. Your organization does not have software developers or the budget to hire a third party. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Suggest that the organization develop an application internally with a database, a backend service for data retrieval, and a frontend service for the application’s user interface."
+      },
+      {
+        "letra": "B",
+        "texto": "Suggest that the organization continue to approve requests manually until budget is available to use a third-party application provider."
+      },
+      {
+        "letra": "C",
+        "texto": "Suggest the organization use AppSheet to create the application."
+      },
+      {
+        "letra": "D",
+        "texto": "Suggest that the organization use AppScript to create forms linked to a Google Sheet to store the purchase data.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "An employee using a Workspace Enterprise Standard license was terminated from your organization. You need to ensure that the former employee no longer has access to their Workspace account and preserve access to the former employee’s documents for the manager and the team.You want to minimize license cost. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Delete the former employee’s Workspace account."
+      },
+      {
+        "letra": "B",
+        "texto": "Suspend former employee’s Workspace account."
+      },
+      {
+        "letra": "C",
+        "texto": "Reset the password of the former employee and keep their Workspace license active."
+      },
+      {
+        "letra": "D",
+        "texto": "Switch the license type of the former employee’s Workspace account to an Archived User license.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "You manage Chrome Enterprise browsers for your large organization. You want to ensure that specific extensions are automatically installed on all managed Chrome Enterprise browsers. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Allowlist the specific Chrome browser extensions."
+      },
+      {
+        "letra": "B",
+        "texto": "Configure a script to deploy the extensions upon user login."
+      },
+      {
+        "letra": "C",
+        "texto": "Publish the extensions in the Chrome Web Store."
+      },
+      {
+        "letra": "D",
+        "texto": "Force-install the extensions through Chrome browser policies.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your company has purchased Gemini licenses for a subset of employees. You need to ensure that only users in the marketing and sales departments have access to Gemini features by using the most efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create a script to assign a Gemini license to new users if they are in marketing or sales. Run the script daily."
+      },
+      {
+        "letra": "B",
+        "texto": "Create an organizational unit (OU) for marketing and sales. Assign the Gemini licenses to that OU, and enable Gemini for that OU only."
+      },
+      {
+        "letra": "C",
+        "texto": "Assign Gemini licenses to each user in the marketing and sales departments."
+      },
+      {
+        "letra": "D",
+        "texto": "Enable Gemini for the entire organization. Instruct users in other departments not to use Gemini.Reveal SolutionHide SolutionDiscussion"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "A user in your organization reported that their internal event recipient is not receiving the Calendar event invites. You need to identify the source of this problem. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Check whether the business hours are set up in the event recipient's Calendar settings"
+      },
+      {
+        "letra": "B",
+        "texto": "Check if Calendar service is turned off for the event creator"
+      },
+      {
+        "letra": "C",
+        "texto": "Check whether the Calendar event has more than 50 guests"
+      },
+      {
+        "letra": "D",
+        "texto": "Check whether the event recipient has turned off their email notifications for new events in their Calendar settings"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your company has offices in several different countries and is deploying Google Workspace. You’re setting up Google Calendar and need to ensure that when a user is creating a Google Calendar event, rooms are suggested in a nearby office. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Restrict room sharing to a dynamic group based on user location"
+      },
+      {
+        "letra": "B",
+        "texto": "Add your users to organizational units (OUs) by location Add room resources to the corresponding OUs"
+      },
+      {
+        "letra": "C",
+        "texto": "Assign building I"
+      },
+      {
+        "letra": "D",
+        "texto": "Add your users to Google Groups by location. Add room resources to the corresponding groups"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your company has just started using Search Ads 360. You need to limit access to Additional Google services for your entire organization by using the Admin console. Only the marketing team and a specific group of users from the web design team should have access. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Enable Search Ads 360 at the top level of your organizational structure"
+      },
+      {
+        "letra": "B",
+        "texto": "Enable Search Ads 360 for the marketing organizational unit (OU). Create a new group in the Admin console that includes the web design team users who need access. Enable Search Ads 360 for that group"
+      },
+      {
+        "letra": "C",
+        "texto": "Enable Search Ads 360 for both the marketing and web design team organizational units (OUs). Create a group to explicitly deny access to Search Ads 360. Assign the group to the web design users who should not have access"
+      },
+      {
+        "letra": "D",
+        "texto": "Enable Search Ads 360 for the marketing organizational unit (OU). Create a sub-OU under the marketing OU. and move the web design team users who need access into this sub-OU"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "Your organization wants to provide access to YouTube to a select group of users for educational purposes, while restricting YouTube access for all other users. You need to implement a solution that allows for granular control over YouTube access based on user roles or groups. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Configure a SAML application to manage YouTube access for different user groups"
+      },
+      {
+        "letra": "B",
+        "texto": "Deploy a Chrome extension from the Google Workspace Marketplace that blocks YouTube for users who are not in the select user group"
+      },
+      {
+        "letra": "C",
+        "texto": "Use organizational units (OUs) to apply a policy that restricts YouTube access and create an exception for the select group of users"
+      },
+      {
+        "letra": "D",
+        "texto": "Instruct the select group of users to switch to their personal Google account when accessing YouTube"
+      }
+    ],
+    "respuesta": "C"
+  }
+];
+let preguntas = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function renderFormulario() {
+  preguntas = JSON.parse(JSON.stringify(preguntasOriginales));
+  shuffle(preguntas);
+  let contenedor = document.getElementById("quizForm");
+  contenedor.innerHTML = "";
+
+  preguntas.forEach((p, idx) => {
+    shuffle(p.opciones);
+    const letras = ['A', 'B', 'C', 'D'];
+    p.opciones.forEach((o, i) => o.nueva = letras[i]);
+    let correcta = p.opciones.find(o => o.letra === p.respuesta);
+    p.respuesta_nueva = p.opciones.find(o => o.texto === correcta.texto).nueva;
+
+    let html = `<div class='question'><h3>${idx + 1}. ${p.texto}</h3><div class='options'>`;
+    p.opciones.forEach(o => {
+      html += `<label><input type='radio' name='q${idx}' value='${o.nueva}'> <strong>${o.nueva})</strong> ${o.texto}</label>`;
+    });
+    html += `</div></div>`;
+    contenedor.innerHTML += html;
+  });
+}
+
+function calificar() {
+  let score = 0;
+  let feedback = "";
+
+  preguntas.forEach((p, idx) => {
+    let seleccion = document.querySelector(`input[name='q${idx}']:checked`);
+    if (seleccion) {
+      if (seleccion.value === p.respuesta_nueva) {
+        score++;
+      } else {
+        let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+        feedback += `<p>Question ${idx + 1}: ❌ Incorrect. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+      }
+    } else {
+      let correcta = p.opciones.find(o => o.nueva === p.respuesta_nueva);
+      feedback += `<p>Question ${idx + 1}: ❌ Not answered. Correct answer: <strong>${correcta.nueva}) ${correcta.texto}</strong></p>`;
+    }
+  });
+
+  let total = preguntas.length;
+  let porcentaje = Math.round((score / total) * 100);
+  let mensaje = `<p><strong>Your score: ${score} / ${total}</strong> (${porcentaje}%)</p>`;
+  mensaje += porcentaje >= 90 ? "<p>✅ Excellent! You passed.</p>" : "<p>❌ You didn’t pass. Try again!</p>";
+  document.getElementById("result").innerHTML = mensaje + feedback;
+  document.getElementById("result").style.display = "block";
+}
+
+function reiniciar(event) {
+  event.preventDefault();
+  document.getElementById("result").style.display = "none";
+  renderFormulario();
+}
+
+renderFormulario();
+</script>
+</body>
+</html>

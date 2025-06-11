@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quiz Quiz 10</title>
+  <title>Quiz Quiz 20</title>
   <style>
     body {
       background: #121212;
@@ -42,7 +42,7 @@
 </head>
 <body>
 <div class="container">
-  <h1>10 Question Practice</h1>
+  <h1>20 Question Practice</h1>
   <form id="quizForm"></form>
   <div id="result"></div>
 </div>
@@ -267,6 +267,226 @@ const preguntasOriginales = [
       }
     ],
     "respuesta": "B"
+  },
+  {
+    "texto": "Your company handles sensitive client data and needs to maintain a high level of security to comply with strict industry regulations. You need to allow your company’s security team to investigate potential security breaches by using the security investigation tool in the Google Admin console.What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Create an activity rule that triggers email notifications to the security team whenever a high-risk security event occurs"
+      },
+      {
+        "letra": "B",
+        "texto": "Assign the User Management Admin role to the security team"
+      },
+      {
+        "letra": "C",
+        "texto": "Assign the super admin role to the security team"
+      },
+      {
+        "letra": "D",
+        "texto": "Create an administrator role with Security Center access. Assign the role to the security team"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization requires enhanced privacy and security when sending messages to banks and other financial institutions. Your organization uses Gmail, but the banks use various other email providers. You need to maximize privacy and limit access to messages sent and received between your organization and the banks. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up Transport Layer Security (TLS) compliance for inbound and outbound messages with a list of the banks’ email domains. Validate the TLS connections"
+      },
+      {
+        "letra": "B",
+        "texto": "Configure Sender Policy Framework (SPF) and DomainKeys Identified Mail (DKIM) authentication for your email domains"
+      },
+      {
+        "letra": "C",
+        "texto": "Enable Protect against unauthenticated emails in Gmail Safety"
+      },
+      {
+        "letra": "D",
+        "texto": "Enable confidential mode for Gmail. Instruct employees to use confidential mode when sending messages to the banks"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "An end user has thousands of files stored in Google Drive. Their files are well organized with Drive labels. You need to advise the end user on how to quickly identify all files that are contracts. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Advise the user to use the Google Drive API to search for files with the keyword “contracts”"
+      },
+      {
+        "letra": "B",
+        "texto": "Advise the user to search in Drive for files with the keyword “contracts”, and use the “modified by me” filter"
+      },
+      {
+        "letra": "C",
+        "texto": "Advise the user to search for files that are labeled as “contracts”"
+      },
+      {
+        "letra": "D",
+        "texto": "Advise the user to use the Investigation tool to search for files with the keyword “contracts” and updated by you"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "You’ve received multiple reports about a suspicious email from someone who is pretending to be from your organization’s human resources department. The email is prompting employees to click a link for a password update. You want to remediate this sender’s emails. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Use the security investigation tool to search for users who received the suspicious email, and select Mark message as phishing"
+      },
+      {
+        "letra": "B",
+        "texto": "Use the security investigation tool to action the suspicious email and select Mark message as spam"
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule to alert administrators to similar emails from that sender"
+      },
+      {
+        "letra": "D",
+        "texto": "Notify all employees and request that they report this email as spam"
+      }
+    ],
+    "respuesta": "A"
+  },
+  {
+    "texto": "Your company’s security team has requested two requirements to secure employees’ mobile devices-enforcement of a passcode and remote account wipe functionality. The security team does not want an agent to be installed on the mobile devices or to purchase additional licenses. Employees have a mix of iOS and Android devices. You need to ensure that these requirements are met. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Implement a third-party enterprise mobility management (EMM) provider"
+      },
+      {
+        "letra": "B",
+        "texto": "Set up advanced mobile management for iOS devices and basic mobile management for Android devices"
+      },
+      {
+        "letra": "C",
+        "texto": "Set up basic management for both iOS and Android devices"
+      },
+      {
+        "letra": "D",
+        "texto": "Set up advanced management for both iOS and Android devices"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization needs an approval application for purchases where a user can enter information on the purchase required and then submit it for management approval. You need to suggest a solution to create the application that must be available on both the web and mobile devices. Your organization does not have software developers or the budget to hire a third party. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Suggest that the organization develop an application internally with a database, a backend service for data retrieval, and a frontend service for the application’s user interface"
+      },
+      {
+        "letra": "B",
+        "texto": "Suggest that the organization continue to approve requests manually until budget is available to use a third-party application provider"
+      },
+      {
+        "letra": "C",
+        "texto": "Suggest the organization use AppSheet to create the application"
+      },
+      {
+        "letra": "D",
+        "texto": "Suggest that the organization use AppScript to create forms linked to a Google Sheet to store the purchase data"
+      }
+    ],
+    "respuesta": "C"
+  },
+  {
+    "texto": "Your organization is concerned about unauthorized access attempts. You want to implement a security measure that makes users change their password if there are twenty or more failed login attempts within one hour. You want to use the most effective and efficient approach. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Set up a Chrome action rule to restrict users from defined ChromeOS actions after twenty failed password attempts"
+      },
+      {
+        "letra": "B",
+        "texto": "Create an activity rule for user log events, define a time period and threshold, and select an Action for the rule to force a password change"
+      },
+      {
+        "letra": "C",
+        "texto": "Create an activity rule for live-state data sources that meets the required time period and threshold to identify users who need to change their password"
+      },
+      {
+        "letra": "D",
+        "texto": "Enable email alerts to notify users that they need to change their password"
+      }
+    ],
+    "respuesta": "B"
+  },
+  {
+    "texto": "An employee using a Workspace Enterprise Standard license was terminated from your organization. You need to ensure that the former employee no longer has access to their Workspace account and preserve access to the former employee’s documents for the manager and the team.You want to minimize license cost. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Delete the former employee’s Workspace account"
+      },
+      {
+        "letra": "B",
+        "texto": "Suspend former employee’s Workspace account"
+      },
+      {
+        "letra": "C",
+        "texto": "Reset the password of the former employee and keep their Workspace license active"
+      },
+      {
+        "letra": "D",
+        "texto": "Switch the license type of the former employee’s Workspace account to an Archived User license"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization's employees frequently collaborate with external clients and vendors by using Google Meet. There are active instances of unsupervised meetings within your organization that do not have a host, and unsupervised meetings that continue after an event has completed. You want to end all meetings that are being used inappropriately as quickly as possible. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "End all unsupervised meetings by using the Google Meet APIs"
+      },
+      {
+        "letra": "B",
+        "texto": "Enable Host Management for Google Meet, and train internal host employees how to end meetings for everyone"
+      },
+      {
+        "letra": "C",
+        "texto": "Turn off Google Meet in the Admin console for your organization. Turn Google Meet back on after two minutes"
+      },
+      {
+        "letra": "D",
+        "texto": "Identify and end all unsupervised meetings by using the security investigation tool"
+      }
+    ],
+    "respuesta": "D"
+  },
+  {
+    "texto": "Your organization uses live-streaming to host large Google Meet meetings. You need to limit the participation to affiliated Google Workspace domains by using the Admin console. What should you do?",
+    "opciones": [
+      {
+        "letra": "A",
+        "texto": "Add the Trusted Workspace domain names in the Stream dialog box"
+      },
+      {
+        "letra": "B",
+        "texto": "Turn off live streaming to Youtube"
+      },
+      {
+        "letra": "C",
+        "texto": "Add participants to an organizational unit (OU). Turn on live streaming"
+      },
+      {
+        "letra": "D",
+        "texto": "Turn on in-house live streaming. Invite users from affiliated domains"
+      }
+    ],
+    "respuesta": "A"
   }
 ];
 
